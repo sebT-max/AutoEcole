@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>StarCol</artifactId>
+	<artifactId>AutoEcole</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>StarCol</name>
-	<description>StarCol project for Labo Back End</description>
+	<name>AutoEcole</name>
+	<description>AutoEcole project for Labo Back End</description>
 	<url/>
 	<licenses>
 		<license/>
