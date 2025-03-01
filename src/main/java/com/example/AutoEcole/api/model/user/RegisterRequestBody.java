@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record RegisterRequestBody(
+
         @NotBlank(message = "lastname can not be empty")
         String lastname,
         @NotBlank(message = "firstname can not be empty")
@@ -17,13 +18,12 @@ public record RegisterRequestBody(
         @NotBlank(message = "The password can not be empty")
         String password,
         // @ ANNOTATION TO INSERT HERE!!!!! LIKE NOT BLANK OR EMPTY????
-        Role role,
-        // @ ANNOTATION TO INSERT HERE!!!! LIKE NOT BLANK OR E_MPTY????
-        BloodType bloodType
+        Role role
+        // @ ANNOTATION TO INSERT HERE!!!! LIKE NOT BLANK OR E_MPTY???
 ) {
         public User toEntity(Role role, BloodType bloodType){
                 //
-                return new User(lastname, firstname, email, password, role, bloodType);
+                return new User(lastname, firstname, email, password, role);
         }
 }
 

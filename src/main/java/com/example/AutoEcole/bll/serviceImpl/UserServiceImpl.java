@@ -74,6 +74,29 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    @Override
+    public boolean update(Long id, User user) {
+        User userToUpdate = findById(id);
+        try{
+            userToUpdate.setUniversalId(user.getUniversalId());
+            userToUpdate.setLastname(user.getLastname());
+            userToUpdate.setFirstname(user.getFirstname());
+            userToUpdate.setEmail(user.getEmail());
+            userToUpdate.setRole(user.getRole());
+            userToUpdate.setBloodType(user.getBloodType());
+            userRepository.save(userToUpdate);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        //NOT IMPLEMENTED YET
+        return false;
+    }
+
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return List.of();

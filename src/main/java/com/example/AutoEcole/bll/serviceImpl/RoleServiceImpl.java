@@ -1,6 +1,7 @@
-package com.example.AutoEcole.bll.serviceimpl;
+package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.bll.exception.alreadyExist.AlreadyExistException;
+import com.example.AutoEcole.bll.exception.ressourceNotFound.RessourceNotFoundException;
 import com.example.AutoEcole.bll.service.RoleService;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.repository.RoleRepository;
@@ -30,6 +31,16 @@ public class RoleServiceImpl implements RoleService {
         }else{
             return roleRepository.findRoleByName(name);
         }
+    }
+
+    @Override
+    public Role findById(Long id) {
+        if(id == null){
+            return null;
+        }
+        return roleRepository.findById(id).orElseThrow(
+                () -> new RessourceNotFoundException("This id " + id + " do not exist")
+        );
     }
 
 }

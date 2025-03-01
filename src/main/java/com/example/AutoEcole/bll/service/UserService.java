@@ -11,5 +11,7 @@ public interface UserService extends UserDetailsService {
     Long register(User user);
     User findById(Long id);
     List<User> findAll();
+    boolean update(Long id, User user);
+    boolean delete(Long id);
 
 }

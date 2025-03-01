@@ -1,4 +1,29 @@
 package com.example.AutoEcole.dal.domain.entity;
 
-public class Facture {
+import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class Facture extends BaseEntity<Long> {
+
+    private String numeroFacture;
+    private LocalDate dateEmission;
+
+    @ManyToOne
+    @JoinColumn(name = "devis_id")
+    private Devis devis;
+
 }

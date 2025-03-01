@@ -5,7 +5,6 @@ import com.example.AutoEcole.bll.service.RoleService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
-import com.example.AutoEcole.dal.domain.enum_.BloodType;
 import com.example.AutoEcole.il.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -37,8 +35,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestBody @Valid RegisterRequestBody request){
         Role role = roleService.findRoleByName("PASSENGER");
-        //BloodType bloodType = BloodType.O_NEGATIF;
-        Long id = userService.register(request.toEntity(role, request.bloodType()));
+        Long id = userService.register(request.toEntity(role,request.bloodType()));
         return ResponseEntity.ok(id);
     }
 
@@ -52,8 +49,7 @@ public class UserController {
                         user.getLastname(),
                         user.getFirstname(),
                         user.getEmail(),
-                        user.getRole(),
-                        user.getBloodType()
+                        user.getRole()
                 )
         );
     }
@@ -69,6 +65,21 @@ public class UserController {
         );
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('PASSENGER') or hasRole('OPERATOR')")
+    public ResponseEntity<UserResponseBody> get(@PathVariable Long id){
+        UserResponseBody user = UserResponseBody.fromEntity(userService.findById(id));
+        return ResponseEntity.ok(user);
+    }
 
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('OPERATOR')")
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody @Valid RegisterRequestBody request){
+        Role role = roleService.findById(request.role().getId());
+        boolean response = userService.update(id, request.toEntity(role));
+        return ResponseEntity.ok(response);
+    }
+
+    //TODO DELETE
 
 }
