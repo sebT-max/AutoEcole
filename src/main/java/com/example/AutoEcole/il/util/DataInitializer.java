@@ -35,7 +35,6 @@ public class DataInitializer implements CommandLineRunner {
             passenger01.setLastname("De Brive Gaillarde");
             passenger01.setFirstname("Jean-Charles Edouard");
             passenger01.setEmail("jce.dbg@aristo.org");
-            passenger01.setBloodType(BloodType.AB_POSITIF);
             passenger01.setPassword(passwordEncoder.encode("Chichis1234="));
             passenger01.setRole(rolePassenger);
             userRepository.save(passenger01);
@@ -44,7 +43,6 @@ public class DataInitializer implements CommandLineRunner {
             operator01.setLastname("Vassiliniei");
             operator01.setFirstname("Petrov");
             operator01.setEmail("vass.pet@operator.org");
-            operator01.setBloodType(BloodType.O_NEGATIF);
             operator01.setPassword(passwordEncoder.encode("Cccp1917"));
             operator01.setRole(roleOperator);
             userRepository.save(operator01);
@@ -53,7 +51,6 @@ public class DataInitializer implements CommandLineRunner {
             passenger02.setLastname("Dupont");
             passenger02.setFirstname("Hilde");
             passenger02.setEmail("hilde.dupont@snob.org");
-            passenger02.setBloodType(BloodType.O_POSITIF);
             passenger02.setPassword(passwordEncoder.encode("Test1234="));
             passenger02.setRole(rolePassenger);
             userRepository.save(passenger02);
