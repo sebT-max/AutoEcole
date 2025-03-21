@@ -1,11 +1,12 @@
 package com.example.AutoEcole.bll.service;
 
+import com.example.AutoEcole.api.model.Paiement.CreatePaiementRequestBody;
 import com.example.AutoEcole.dal.domain.entity.Paiement;
 
 import java.util.List;
 
 public interface PaiementService {
-    CreatePaiementResponseBody createPlanet(CreatePaiementRequestBody request);
+    CreatePaiementRequestBody createPlanet(CreatePaiementRequestBody request);
     public List<Paiement> getAllPlanets();
     public Paiement getPlanetById(Long id);
 

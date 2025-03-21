@@ -1,11 +1,13 @@
 package com.example.AutoEcole.api.controller;
 
-import com.example.AutoEcole.api.model.Booking.CreateInscriptionRequestBody;
-import com.example.AutoEcole.api.model.Booking.CreateInscriptionResponseBody;
+import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
+import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.bll.service.BookingService;
+import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.bll.service.JourneyService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Booking;
+import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Journey;
 import com.example.AutoEcole.dal.domain.entity.User;
 import jakarta.validation.Valid;
@@ -18,18 +20,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/V1/booking")
+@RequestMapping("api/V1/inscription")
 
 public class InscriptionController {
-    private final BookingService bookingService;
-    private final JourneyService journeyService;
+    private final InscriptionService inscriptionService;
     private final UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<CreateInscriptionResponseBody> createBooking(@RequestBody CreateInscriptionRequestBody request) {
+    public ResponseEntity<CreateInscriptionResponseBody> createInscription(@RequestBody CreateInscriptionRequestBody request) {
         User user = userService.findById(request.userId());
         try {
-            CreateInscriptionResponseBody response = bookingService.createBooking(request);
+            CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new CreateInscriptionResponseBody(e.getMessage()));
@@ -37,25 +38,25 @@ public class InscriptionController {
     }
     @GetMapping("/all")
     @PreAuthorize("hasRole('OPERATOR')")
-    public List<Booking> getAllBooking(){
-        return bookingService.getAllBooking();
+    public List<Inscription> getAllInscriptions(){
+        return inscriptionService.getAll();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
-    public Booking getBookingById(@PathVariable Long id){
-        return bookingService.getBookingById(id);
+    public Inscription getInscriptionById(@PathVariable Long id){
+        return inscriptionService.getInscriptionById(id);
     }
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("hasRole('OPERATOR')")
-    public List<Booking> getBookingByUserId(@PathVariable Long userId){
-        return bookingService.getBookingByUserId(userId);
+    public List<Inscription> getBookingByUserId(@PathVariable Long userId){
+        return inscriptionService.getInscriptionByUserId(userId);
     }
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
     public boolean deleteBooking(@PathVariable Long id){
-        return bookingService.delete(id);
+        return inscriptionService.delete(id);
     }
 
 

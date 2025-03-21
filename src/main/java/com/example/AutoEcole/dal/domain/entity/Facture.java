@@ -1,10 +1,7 @@
 package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,5 +22,8 @@ public class Facture extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "devis_id")
     private Devis devis;
+
+    @Column(nullable = false)
+    private Double price;
 
 }

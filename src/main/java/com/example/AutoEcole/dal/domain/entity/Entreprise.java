@@ -22,7 +22,4 @@ public class Entreprise extends BaseEntity<Long> {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private Double price;
-
 }

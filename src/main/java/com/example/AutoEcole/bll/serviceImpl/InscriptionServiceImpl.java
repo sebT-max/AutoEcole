@@ -1,14 +1,14 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
-import com.example.AutoEcole.api.model.Booking.CreateInscriptionRequestBody;
-import com.example.AutoEcole.api.model.Booking.CreateInscriptionResponseBody;
+import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
+import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.bll.exception.access.AccessDeniedException;
-import com.example.AutoEcole.bll.service.BookingService;
-import com.example.AutoEcole.dal.domain.entity.Booking;
-import com.example.AutoEcole.dal.domain.entity.Journey;
+import com.example.AutoEcole.bll.service.InscriptionService;
+import com.example.AutoEcole.dal.domain.entity.Inscription;
+import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
-import com.example.AutoEcole.dal.repository.BookingRepository;
-import com.example.AutoEcole.dal.repository.JourneyRepository;
+import com.example.AutoEcole.dal.repository.InscriptionRepository;
+import com.example.AutoEcole.dal.repository.StageRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,54 +23,52 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class InscriptionServiceImpl implements BookingService {
+public class InscriptionServiceImpl implements InscriptionService {
 
     private final UserRepository userRepository;
-    private final BookingRepository bookingRepository;
-    private final JourneyRepository journeyRepository;
+    private final InscriptionRepository inscriptionRepository;
+    private final StageRepository stageRepository;
 
     @Override
     public CreateInscriptionResponseBody createBooking(CreateInscriptionRequestBody request) {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Récupérer le voyage via son ID
-        Journey journey = journeyRepository.findById(request.journeyId())
+        // Récupérer le stage via son ID
+        Stage stage = stageRepository.findById(request.stageId())
                 .orElseThrow(() -> new RuntimeException("Voyage non trouvé"));
 
 
-        if (journey.getCapacity() < request.nbrPerson()) {
+        if (stage.getCapacity() < request.nbrPerson()) {
             // Calculer la capacité restante et inclure dans le message d'erreur
-            int remainingCapacity = journey.getCapacity();
+            int remainingCapacity = stage.getCapacity();
             throw new RuntimeException("Capacité insuffisante. Il reste " + remainingCapacity + " places disponibles.");
         }
 
-        // Créer la réservation
-        Booking booking = new Booking();
-        booking.setUser(user);
-        booking.setJourney(journey);
-        booking.setDate(request.date());
-        booking.setNbrPerson(request.nbrPerson());
+        // Créer l'inscription
+        Inscription inscription = new Inscription();
+        inscription.setUser(user);
+        inscription.setStage(stage);inscription.setDateOfInscription(request.dateOfInscription());
 
         // Sauvegarder la réservation
-        bookingRepository.save(booking);
+        inscriptionRepository.save(inscription);
 
         // Mettre à jour la capacité du voyage
-        journey.setCapacity(journey.getCapacity() - request.nbrPerson());
-        journeyRepository.save(journey);
+        stage.setCapacity(stage.getCapacity() - request.nbrPerson());
+        stageRepository.save(stage);
 
         // Retourner la réponse
         return new CreateInscriptionResponseBody(
                 "Réservation effectuée avec succès !",
-                booking.getId(),
-                booking.getJourney().getDestination(),
-                booking.getDate(),
-                booking.getNbrPerson()
+                inscription.getId(),
+                inscription.getStage(),
+                inscription.getDateOfInscription(),
+                inscription.getNbrPerson()
         );
     }
 
     @Override
-    public List<Booking> getAllBooking() {
+    public List<Inscription> getAllInscriptions() {
         // Récupération de l'utilisateur authentifié
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -80,19 +78,19 @@ public class InscriptionServiceImpl implements BookingService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
         // Vérification si il s'agit d'un opérateur
-        boolean isOperator = user.getRole().getName().equals("OPERATOR") || user.getRole().getName().equals("PASSENGER");
+        boolean isAdmin = user.getRole().getName().equals("ADMIN") || user.getRole().getName().equals("CLIENT");
 
-        if (!isOperator) {
+        if (!isAdmin) {
             throw new AccessDeniedException("Accès refusé : vous n'avez pas les permissions nécessaires.");
         }
 
         // Si l'utilisateur est ADMIN ou TECHNICIEN, il peut voir tous les tickets
-        return bookingRepository.findAll();
+        return inscriptionRepository.findAll();
     }
 
     @Override
-    public List<Booking> getBookingByUserId(Long userId){
-        List<Booking> bookings = bookingRepository.findByUserIdWithDetails(userId);
+    public List<Inscription> getInscriptionsByUserId(Long userId){
+        List<Inscription> bookings = inscriptionRepository.findByUserIdWithDetails(userId);
         if (bookings.isEmpty()) {
             throw new RuntimeException("Aucune réservation trouvée pour l'utilisateur avec l'ID : " + userId);
         }
@@ -101,26 +99,26 @@ public class InscriptionServiceImpl implements BookingService {
 
 
     @Override
-    public Booking getBookingById(Long id){
-        Booking bookingById = bookingRepository.findById(id)
+    public Inscription getBookingById(Long id){
+        Inscription inscriptionById = inscriptionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réservation non trouvé"));
 
-        return bookingById;
+        return inscriptionById;
     }
 
-    @Override
     @Transactional
-    public boolean update(Long id, Booking booking) {
-        Booking bookingToUpdate = getBookingById(id);
-        if (bookingToUpdate == null) {
+    @Override
+    public boolean update(Long id, Inscription inscription) {
+        Inscription inscriptionToUpdate = getBookingById(id);
+        if (inscriptionToUpdate == null) {
             throw new EntityNotFoundException("Réservation avec l'ID " + id + " non trouvée");
         }
         try {
-            bookingToUpdate.setUser(bookingToUpdate.getUser());
+            inscriptionToUpdate.setUser(inscriptionToUpdate.getUser());
             // Mettre à jour les champs nécessaires
-            bookingToUpdate.setJourney(booking.getJourney());
-            bookingToUpdate.setDate(booking.getDate());
-            bookingToUpdate.setNbrPerson(booking.getNbrPerson());
+            inscriptionToUpdate.setStage(inscription.getStage());
+            inscriptionToUpdate.setDateOfInscription(inscription.getDateOfInscription());
+            inscriptionToUpdate.setNbrPerson(inscription.getNbrPerson());
 
             // Sauvegarder la réservation mise à jour
             return true;
@@ -131,9 +129,9 @@ public class InscriptionServiceImpl implements BookingService {
 
     @Override
     public boolean delete(Long id) {
-        Optional<Booking> booking = bookingRepository.findById(id);
+        Optional<Inscription> booking = inscriptionRepository.findById(id);
         if (booking.isPresent()) {
-            bookingRepository.deleteById(id);
+            inscriptionRepository.deleteById(id);
             return true;
         }
         return false;  // Booking not found

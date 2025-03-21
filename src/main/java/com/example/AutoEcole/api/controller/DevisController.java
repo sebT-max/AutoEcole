@@ -13,7 +13,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/V1/planets")
+@RequestMapping("/api/V1/devis")
+
 public class DevisController {
     private final DevisService devisService;
     private final UserService userService;
@@ -22,13 +23,17 @@ public class DevisController {
     public ResponseEntity<CreateDevisResponseBody> createDevis(@RequestBody CreateDevisRequestBody request){
         return ResponseEntity.ok(devisService.createDevis(request));
     }
+
+
     @GetMapping("/all")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Devis> getAllDevis(){
         return devisService.getAllDevis();
     }
+
+
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Devis getPlanetById(@PathVariable Long id){
         return devisService.getDevisById(id);
     }

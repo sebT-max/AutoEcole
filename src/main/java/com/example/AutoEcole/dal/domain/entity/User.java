@@ -1,7 +1,6 @@
 package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
-import com.example.AutoEcole.dal.domain.enum_.BloodType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,10 +16,6 @@ import java.util.List;
 @ToString
 @Table(name = "users")
 public class User extends BaseEntity<Long> implements UserDetails {
-//    @Getter
-//    @Setter
-//    @Column(name = "USERNAME",unique = true, nullable = false, length = 50)
-//    private String username;
 
     @Getter
     @Setter
@@ -47,10 +42,11 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @Getter @Setter
     @ManyToOne
     @JoinColumn(nullable = false)
-    private com.example.AutoEcole.dal.domain.entity.Role role;
+    private Role role;
 
-    public User(String lastname, String firstname, String email, String password, com.example.AutoEcole.dal.domain.entity.Role role,
-                BloodType bloodType){
+    private boolean acceptTerms;
+
+    public User(String lastname, String firstname, String email, String password,Role role){
         this.lastname = lastname;
         this.firstname = firstname;
         this.email = email;
@@ -58,7 +54,7 @@ public class User extends BaseEntity<Long> implements UserDetails {
         this.role = role;
     }
 
-    public User(String lastname, String firstname, String email, com.example.AutoEcole.dal.domain.entity.Role role, BloodType bloodType){
+    public User(String lastname, String firstname, String email, com.example.AutoEcole.dal.domain.entity.Role role){
         this.lastname = lastname;
         this.firstname = firstname;
         this.email = email;

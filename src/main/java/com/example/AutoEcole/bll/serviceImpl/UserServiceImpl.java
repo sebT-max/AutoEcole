@@ -1,9 +1,12 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
+import com.example.AutoEcole.api.model.user.RegisterRequestBody;
 import com.example.AutoEcole.bll.exception.alreadyExist.AlreadyExistException;
 import com.example.AutoEcole.bll.exception.ressourceNotFound.RessourceNotFoundException;
 import com.example.AutoEcole.bll.service.UserService;
+import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.repository.RoleRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +22,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
 //    @Override
@@ -61,6 +65,31 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user).getId();
     }
+    public User register(RegisterRequestBody requestBody) {
+        // Vérifier que l'utilisateur accepte les conditions d'utilisation
+        if (!requestBody.acceptTerms()) {
+            throw new IllegalArgumentException("You must accept the terms and conditions to register.");
+        }
+
+        // Vérifier si l'email est déjà utilisé
+        if (userRepository.existUserByEmail(requestBody.email())) {
+            throw new IllegalArgumentException("Email already in use.");
+        }
+
+        // Récupérer le rôle depuis la base
+        Role role = roleRepository.findRoleByName(requestBody.role().getName())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        // Créer l’entité utilisateur
+        User newUser = requestBody.toEntity(role, null);
+
+        // Hasher le mot de passe (si tu utilises Spring Security)
+        newUser.setPassword(passwordEncoder.encode(requestBody.password()));
+
+        // Sauvegarder l'utilisateur
+        return userRepository.save(newUser);
+    }
+
 
     @Override
     public User findById(Long id) {

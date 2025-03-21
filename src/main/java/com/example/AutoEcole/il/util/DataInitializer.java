@@ -1,7 +1,6 @@
 package com.example.AutoEcole.il.util;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
-import com.example.AutoEcole.dal.domain.enum_.BloodType;
 import com.example.AutoEcole.dal.repository.RoleRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

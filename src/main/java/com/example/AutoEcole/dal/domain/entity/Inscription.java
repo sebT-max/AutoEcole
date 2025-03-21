@@ -2,8 +2,8 @@ package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
 import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
-import com.example.AutoEcole.dal.domain.enum_.StageType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.User;
 
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -36,7 +35,13 @@ public class Inscription extends BaseEntity<Long> {
     @Column(nullable = false)
     private Date dateOfInscription;
 
+    @Column
+    Integer nbrPerson;
+
     @OneToOne(mappedBy = "code_promo")
     private CodePromo codePromo;
+
+    @NotNull
+    private Boolean acceptTerms;
 
 }

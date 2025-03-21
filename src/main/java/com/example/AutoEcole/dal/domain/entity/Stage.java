@@ -19,7 +19,7 @@ import java.util.Date;
 @Table(name = "stage")
 
 public class Stage extends BaseEntity<Long> {
-    @Column(name = "statut")
+    @Column
     @Enumerated(EnumType.STRING)
     private StageType stageType;
 
@@ -27,11 +27,34 @@ public class Stage extends BaseEntity<Long> {
     private Date dateDeStage;
 
     @Column
-    private String lieuDeStage;
+    private String city;
 
     @Column
-    private Long capacity;
+    private String street;
 
     @Column
-    private Long Price;
+    private String arrondissement;
+
+    @Column
+    private int capacity;
+
+    @Column
+    private Long price;
+
+    @Column
+    private String organisation;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private String twoDaysOfTheWeek ;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private String month ;
+
+    @Column (name = "statut")
+    @Enumerated(EnumType.STRING)
+    private String statut;
+
+
 }

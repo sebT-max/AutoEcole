@@ -80,6 +80,18 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/client/dashboard")
+    public ResponseEntity<String> espaceClient() {
+        return ResponseEntity.ok("Bienvenue dans l’espace client !");
+    }
+
+    @PreAuthorize("hasRole('ENTREPRISE')")
+    @GetMapping("/entreprise/dashboard")
+    public ResponseEntity<String> espaceEntreprise() {
+        return ResponseEntity.ok("Bienvenue dans l’espace entreprise !");
+    }
+
     //TODO DELETE
 
 }
