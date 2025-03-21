@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.security.core.userdetails.User;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -33,7 +34,7 @@ public class Inscription extends BaseEntity<Long> {
     private InscriptionStatut inscriptionStatut;
 
     @Column(nullable = false)
-    private Date dateOfInscription;
+    private LocalDate dateOfInscription;
 
     @Column
     Integer nbrPerson;

@@ -2,13 +2,11 @@ package com.example.AutoEcole.api.controller;
 
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
-import com.example.AutoEcole.bll.service.BookingService;
 import com.example.AutoEcole.bll.service.InscriptionService;
-import com.example.AutoEcole.bll.service.JourneyService;
+import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.bll.service.UserService;
-import com.example.AutoEcole.dal.domain.entity.Booking;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
-import com.example.AutoEcole.dal.domain.entity.Journey;
+import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +23,11 @@ import java.util.List;
 public class InscriptionController {
     private final InscriptionService inscriptionService;
     private final UserService userService;
+    private final StageService stageService;
 
     @PostMapping("/create")
     public ResponseEntity<CreateInscriptionResponseBody> createInscription(@RequestBody CreateInscriptionRequestBody request) {
-        User user = userService.findById(request.userId());
+        User user = userService.findById(request.user().getId());
         try {
             CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
             return ResponseEntity.ok(response);
@@ -39,19 +38,19 @@ public class InscriptionController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('OPERATOR')")
     public List<Inscription> getAllInscriptions(){
-        return inscriptionService.getAll();
+        return inscriptionService.getAllInscriptions();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
     public Inscription getInscriptionById(@PathVariable Long id){
-        return inscriptionService.getInscriptionById(id);
+        return inscriptionService.getBookingById(id);
     }
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("hasRole('OPERATOR')")
-    public List<Inscription> getBookingByUserId(@PathVariable Long userId){
-        return inscriptionService.getInscriptionByUserId(userId);
+    public List<Inscription> getInscriptionsByUserId(@PathVariable Long userId){
+        return inscriptionService.getInscriptionsByUserId(userId);
     }
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
@@ -59,29 +58,21 @@ public class InscriptionController {
         return inscriptionService.delete(id);
     }
 
-
-
-
-
-
-
-
-
     @PutMapping("/update/{id}")
     public ResponseEntity<Boolean> updateBooking(
             @PathVariable Long id,
             @RequestBody @Valid CreateInscriptionRequestBody request) {
 
-        Booking booking = bookingService.getBookingById(id);
-        if (booking == null) {
+        Inscription inscription = inscriptionService.getBookingById(id);
+        if (inscription == null) {
             return ResponseEntity.notFound().build();
         }
-        User user = userService.findById(request.userId());
-        Journey journey = journeyService.getJourneyById(request.journeyId());
+        User user = userService.findById(request.user().getId());
+        Stage stage = stageService.getStageById(request.stageId());
 
         // Crée la nouvelle entité Booking avec les nouvelles valeurs, en conservant l'utilisateur existant
-        Boolean updatedBooking = bookingService.update(
-                id, request.toEntity(user,journey));
+        Boolean updatedBooking = inscriptionService.update(
+                id, request.toEntity(user,stage));
 
         return ResponseEntity.ok(updatedBooking);
     }

@@ -6,7 +6,7 @@ import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
 import java.time.LocalDate;
 
 public record CreateInscriptionRequestBody(
-        User user,
+        Long userId,
         Long stageId,
         InscriptionStatut inscriptionStatut,
         LocalDate dateOfInscription,

@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestBody @Valid RegisterRequestBody request){
         Role role = roleService.findRoleByName("PASSENGER");
-        Long id = userService.register(request.toEntity(role,request.bloodType()));
+        Long id = userService.register(request.toEntity(role));
         return ResponseEntity.ok(id);
     }
 

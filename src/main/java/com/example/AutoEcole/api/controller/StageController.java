@@ -2,10 +2,7 @@ package com.example.AutoEcole.api.controller;
 
 import com.example.AutoEcole.api.model.Stage.CreateStageRequestBody;
 import com.example.AutoEcole.api.model.Stage.CreateStageResponseBody;
-import com.example.AutoEcole.bll.service.JourneyService;
-import com.example.AutoEcole.bll.service.PlanetService;
 import com.example.AutoEcole.bll.service.StageService;
-import com.example.AutoEcole.dal.domain.entity.Journey;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,23 +25,15 @@ public class StageController {
 
     @GetMapping("/all")
     public List<Stage> getAllJourneys(){
-        return stageService.getAllStage();
+        return stageService.getAllStages();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
     public Stage getJourneyById(@PathVariable Long id){
-        return stageService.getJourneyById(id);
+        return stageService.getStageById(id);
     }
 
-    @GetMapping("/planet/{planetName}")
-    public ResponseEntity<List<Stage>> getJourneysByPlanet(@PathVariable String planetName) {
-        List<Stage> journeys = stageService.getJourneysByPlanetName(planetName);
-        if (journeys.isEmpty()) {
-            return ResponseEntity.notFound().build(); // Aucun voyage trouvé pour cette planète
-        }
-        return ResponseEntity.ok(journeys); // Retourne la liste des voyages
-    }
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
     public boolean deleteJourney(@PathVariable Long id){

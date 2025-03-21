@@ -2,13 +2,11 @@ package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.Stage.CreateStageRequestBody;
 import com.example.AutoEcole.api.model.Stage.CreateStageResponseBody;
-import com.example.AutoEcole.bll.service.JourneyService;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.dal.domain.entity.*;
-import com.example.AutoEcole.dal.repository.JourneyRepository;
-import com.example.AutoEcole.dal.repository.PlanetRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
 import com.example.AutoEcole.dal.specifications.StageSpecification;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,33 +22,33 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StageServiceImpl implements StageService {
     private final StageRepository stageRepository;
-    private final PlanetRepository planetRepository;
 
     @Override
     public CreateStageResponseBody createStage(CreateStageRequestBody request) {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Planet planet = planetRepository.findPlanetByName(request.planet()); // Recherche dans la base de données
 
-        if (planet == null) {
-            // Si la planète n'existe pas dans la base, lancer une exception
-            throw new RuntimeException("Planète non trouvée avec le nom: " + request.planet());
-        }
         Stage stage = new Stage();
-        stage.setFlightDurationInHours(request.flightDurationInHours());
+        stage.setDateDeStage(request.dateDeStage());
         stage.setPrice(request.price());
-        stage.setDestination(request.destination());
-        stage.setPlanet(planet);
+        stage.setCity(request.city());
+        stage.setStreet(request.street());
+        stage.setArrondissement(request.arrondissement());
+        stage.setCapacity(request.capacity());
+        stage.setOrganisation(request.organisation());
        stageRepository.save(stage);
        //retour
 
         return new CreateStageResponseBody(
                 "Le voyage a bien été créé",
-                (long) stage.getCapacity(), // Convert capacity to Long for response
-                stage.getFlightDurationInHours(),
+                stage.getDateDeStage(),
                 stage.getPrice(),
-                stage.getDestination(),
-                stage.getPlanet().getName());
+                stage.getCity(),
+                stage.getStreet(),
+                stage.getArrondissement(),
+                stage.getCapacity(),
+                stage.getOrganisation()
+        );
     }
 
     @Override
@@ -69,12 +67,17 @@ public class StageServiceImpl implements StageService {
     @Transactional
     public boolean update(Long id, Stage stage) {
         Stage stageToUpdate = getStageById(id);
+        if (stageToUpdate == null) {
+            throw new EntityNotFoundException("Réservation avec l'ID " + id + " non trouvée");
+        }
         try{
-            stageToUpdate.setFlightDurationInHours(stage.getFlightDurationInHours());
+            stageToUpdate.setDateDeStage(stage.getDateDeStage());
             stageToUpdate.setPrice(stage.getPrice());
-            stageToUpdate.setDestination(stage.getDestination());
-            stageToUpdate.setPlanet(stage.getPlanet());
-            stageRepository.save(stageToUpdate);
+            stageToUpdate.setCity(String.valueOf(stage.getPrice()));
+            stageToUpdate.setStreet(stage.getStreet());
+            stageToUpdate.setArrondissement(stage.getArrondissement());
+            stageToUpdate.setCapacity(stage.getCapacity());
+            stageToUpdate.setOrganisation(stage.getOrganisation());
             return true;
         }catch(Exception e){
             return false;
@@ -92,7 +95,7 @@ public class StageServiceImpl implements StageService {
     }
     @Override
     public List<Stage> searchStages(String entreprise, String localisation, Integer duree, LocalDate dateDebut) {
-        Specification<Stage> spec = StageSpecification.filterBy(entreprise, localisation, duree, dateDebut);
+        Specification<Stage> spec = StageSpecification.filterBy();
         return stageRepository.findAll(spec);
     }
 

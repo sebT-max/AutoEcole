@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -24,7 +25,7 @@ public class Stage extends BaseEntity<Long> {
     private StageType stageType;
 
     @Column
-    private Date dateDeStage;
+    private LocalDate dateDeStage;
 
     @Column
     private String city;
@@ -39,7 +40,7 @@ public class Stage extends BaseEntity<Long> {
     private int capacity;
 
     @Column
-    private Long price;
+    private Double price;
 
     @Column
     private String organisation;

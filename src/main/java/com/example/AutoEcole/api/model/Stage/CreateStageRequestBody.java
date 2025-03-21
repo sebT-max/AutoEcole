@@ -1,14 +1,27 @@
 package com.example.AutoEcole.api.model.Stage;
 
-import com.example.AutoEcole.dal.domain.entity.Planet;
+import com.example.AutoEcole.dal.domain.enum_.StageType;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 public record CreateStageRequestBody(
-        //Long capacity,
-        Long flightDurationInHours,
-        Long price,
-        String destination,
-        //@OneToMany(mappedBy = "journey")//private set<Passenger> passengers;
-        String planet
+   StageType stageType,
+
+   LocalDate dateDeStage,
+
+   String city,
+
+   String street,
+
+   String arrondissement,
+
+   int capacity,
+
+   Double price,
+
+   String organisation
+
 ) {
 
 }

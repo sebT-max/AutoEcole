@@ -7,19 +7,16 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 import java.util.Date;
-
+@Entity
 public class Convocation extends BaseEntity<Long> {
-    @Entity
-    public class Convocation {
+    @ManyToOne
+    private Inscription inscription;
 
-        @ManyToOne
-        private Inscription inscription;
+    private String pdfPath; // Lien vers le fichier généré
 
-        private String pdfPath; // Lien vers le fichier généré
+    private boolean sent;
 
-        private boolean sent;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date sentAt;
 
-        @Temporal(TemporalType.TIMESTAMP)
-        private Date sentAt;
-    }
 }

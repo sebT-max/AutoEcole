@@ -5,7 +5,6 @@ import com.example.AutoEcole.dal.domain.enum_.DevisStatut;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class Devis extends BaseEntity<Long> {
@@ -27,7 +25,7 @@ public class Devis extends BaseEntity<Long> {
 
     @Column(name="montant_estimé")
     Double estimated_amount;
--
+
     @Column(name="date_demande")
     LocalDate dateOfDemand;
 
@@ -37,4 +35,5 @@ public class Devis extends BaseEntity<Long> {
     @Column(name = "statut")
     @Enumerated(EnumType.STRING)
     private DevisStatut devisStatut;
+
 }

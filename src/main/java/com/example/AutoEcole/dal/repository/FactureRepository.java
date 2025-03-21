@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface FactureRepository extends JpaRepository<Facture, Long> {
-    List<com.example.AutoEcole.dal.domain.entity.Document> findByBookingId(Long reservationId);
-    List<com.example.AutoEcole.dal.domain.entity.Document> findByUserId(Long userId);
+
 }

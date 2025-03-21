@@ -107,12 +107,10 @@ public class UserServiceImpl implements UserService {
     public boolean update(Long id, User user) {
         User userToUpdate = findById(id);
         try{
-            userToUpdate.setUniversalId(user.getUniversalId());
             userToUpdate.setLastname(user.getLastname());
             userToUpdate.setFirstname(user.getFirstname());
             userToUpdate.setEmail(user.getEmail());
             userToUpdate.setRole(user.getRole());
-            userToUpdate.setBloodType(user.getBloodType());
             userRepository.save(userToUpdate);
             return true;
         }catch(Exception e){

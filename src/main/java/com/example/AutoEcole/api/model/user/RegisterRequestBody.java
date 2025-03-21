@@ -30,7 +30,11 @@ public record RegisterRequestBody(
 
 ) {
 
-        public User toEntity(Role role, BloodType bloodType) {
+        public User toEntity(Role role) {
                 return new User(lastname, firstname, email, password, role);
+        }
+
+        public boolean isAcceptTerms() {
+                return false;
         }
 }

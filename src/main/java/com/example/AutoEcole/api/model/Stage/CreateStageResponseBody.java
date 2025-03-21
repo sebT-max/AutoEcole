@@ -1,13 +1,16 @@
 package com.example.AutoEcole.api.model.Stage;
 
+import java.time.LocalDate;
+
 public record CreateStageResponseBody(
         String message,
-        Long capacity,
-        Long flightDurationInHours,
-        Long price,
-        String destination,
-        //@OneToMany(mappedBy = "journey")//private set<Passenger> passengers;
-        String planet
+        LocalDate getDateDeStage,
+        Double Price,
+        String city,
+        String street,
+        String arrondissement,
+        int capacity,
+        String organisation
 ) {
 
 }

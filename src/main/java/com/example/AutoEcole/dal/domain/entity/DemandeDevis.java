@@ -12,5 +12,5 @@ public class DemandeDevis {
     @Column
     private int numberOfInterns;
 
-    private boolean acceptDevis
+    private boolean acceptDevis;
 }

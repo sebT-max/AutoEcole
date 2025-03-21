@@ -2,7 +2,6 @@ package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
-import com.example.AutoEcole.bll.exception.access.AccessDeniedException;
 import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
@@ -30,7 +29,7 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final StageRepository stageRepository;
 
     @Override
-    public CreateInscriptionResponseBody createBooking(CreateInscriptionRequestBody request) {
+    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request) {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -47,8 +46,8 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         // Créer l'inscription
         Inscription inscription = new Inscription();
-        inscription.setUser(user);
-        inscription.setStage(stage);inscription.setDateOfInscription(request.dateOfInscription());
+        inscription.setStage(stage);
+        inscription.setDateOfInscription(request.dateOfInscription());
 
         // Sauvegarder la réservation
         inscriptionRepository.save(inscription);
@@ -80,9 +79,9 @@ public class InscriptionServiceImpl implements InscriptionService {
         // Vérification si il s'agit d'un opérateur
         boolean isAdmin = user.getRole().getName().equals("ADMIN") || user.getRole().getName().equals("CLIENT");
 
-        if (!isAdmin) {
-            throw new AccessDeniedException("Accès refusé : vous n'avez pas les permissions nécessaires.");
-        }
+        //if (!isAdmin) {
+          //  throw new AccessDeniedException("Accès refusé : vous n'avez pas les permissions nécessaires.");
+        //}
 
         // Si l'utilisateur est ADMIN ou TECHNICIEN, il peut voir tous les tickets
         return inscriptionRepository.findAll();

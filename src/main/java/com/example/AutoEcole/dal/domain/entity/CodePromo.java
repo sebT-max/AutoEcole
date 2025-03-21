@@ -23,5 +23,5 @@ public class CodePromo  extends BaseEntity<Long> {
     Date expiry_date;
     @Column(name = "codePromo_statut")
     @Enumerated(EnumType.STRING)
-    private CodePromoStatut statut;
+    private String codePromoStatut;
 }
