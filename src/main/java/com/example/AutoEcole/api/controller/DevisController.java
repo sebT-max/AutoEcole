@@ -48,7 +48,7 @@ public class DevisController {
             return ResponseEntity.notFound().build();
         }
         // Crée la nouvelle entité Booking avec les nouvelles valeurs, en conservant l'utilisateur existant
-        Boolean updatedPlanet = devisService.update(id,request.toEntity());
+        Boolean updatedPlanet = devisService.update(id,request.toEntity(request.entreprise()));
 
         return ResponseEntity.ok(updatedPlanet);
     }
