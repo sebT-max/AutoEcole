@@ -1,8 +1,7 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.user.RegisterRequestBody;
-import com.example.AutoEcole.bll.exception.alreadyExist.AlreadyExistException;
-import com.example.AutoEcole.bll.exception.ressourceNotFound.RessourceNotFoundException;
+import com.example.AutoEcole.Exception.ressourceNotFound.RessourceNotFoundException;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
@@ -25,54 +24,32 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return userRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException(username));
-//    }
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
-//    @Override
-//    public User login(String email, String password) {
-//        User user = userRepository.findByUsername(email)
-//                .orElseThrow(() -> new UsernameNotFoundException(email));
-//
-//        if(!passwordEncoder.matches(password, user.getPassword())){
-//            throw new BadCredentialsException("Wrong password");
-//        }
-//        return user;
-//    }
+
     @Override
     public User login(String email, String password) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+                .orElseThrow(() -> new UsernameNotFoundException("Aucun utilisateur avec cette adresse email: " + email));
 
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new BadCredentialsException("Wrong password");
+            throw new BadCredentialsException("Mot de passe incorrect");
         }
         return user;
     }
-
     @Override
-    public Long register(User user) {
-        if(userRepository.existUserByEmail(user.getEmail())){
-            throw new AlreadyExistException("The email : " + user.getEmail() + " already exist!");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user).getId();
-    }
-    public User register(RegisterRequestBody requestBody) {
+    public Long register(RegisterRequestBody requestBody) {
         // Vérifier que l'utilisateur accepte les conditions d'utilisation
+
+
         if (!requestBody.acceptTerms()) {
             throw new IllegalArgumentException("You must accept the terms and conditions to register.");
         }
-
         // Vérifier si l'email est déjà utilisé
-        if (userRepository.existUserByEmail(requestBody.email())) {
+        if (userRepository.findByEmail(requestBody.email()).isPresent()) {
             throw new IllegalArgumentException("Email already in use.");
         }
 
@@ -81,13 +58,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Créer l’entité utilisateur
-        User newUser = requestBody.toEntity(role);
+        User newUser = requestBody.toEntity();
 
         // Hasher le mot de passe (si tu utilises Spring Security)
         newUser.setPassword(passwordEncoder.encode(requestBody.password()));
 
         // Sauvegarder l'utilisateur
-        return userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+
+        // Retourner l'ID de l'utilisateur créé
+        return savedUser.getId();
     }
 
 
@@ -102,7 +82,7 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         return userRepository.findAll();
     }
-
+/*
     @Override
     public boolean update(Long id, User user) {
         User userToUpdate = findById(id);
@@ -118,26 +98,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+ */
+
     @Override
     public boolean delete(Long id) {
         //NOT IMPLEMENTED YET
         return false;
     }
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public String getPassword() {
-//        return "";
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return "";
-//    }
 
 }
 

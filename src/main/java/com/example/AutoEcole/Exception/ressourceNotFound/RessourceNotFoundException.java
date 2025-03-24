@@ -1,6 +1,6 @@
-package com.example.AutoEcole.bll.exception.ressourceNotFound;
+package com.example.AutoEcole.Exception.ressourceNotFound;
 
-import com.example.AutoEcole.bll.exception.AutoEcoleException;
+import com.example.AutoEcole.Exception.AutoEcoleException;
 
 public class RessourceNotFoundException extends AutoEcoleException {
 

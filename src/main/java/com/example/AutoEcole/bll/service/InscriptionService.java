@@ -10,16 +10,17 @@ import java.util.List;
 public interface InscriptionService {
 
     CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request);
-
+/*
     List<Inscription> getAllInscriptions();
 
     List<Inscription> getInscriptionsByUserId(Long userId);
 
-    //List<Inscription> getAllInscription();
     Inscription getBookingById(Long id);
 
     @Transactional
     boolean update(Long id, Inscription inscription);
 
     boolean delete(Long id);
+
+ */
 }

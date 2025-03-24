@@ -9,6 +9,7 @@ import jakarta.persistence.TemporalType;
 import java.util.Date;
 @Entity
 public class Convocation extends BaseEntity<Long> {
+    /*
     @ManyToOne
     private Inscription inscription;
 
@@ -18,5 +19,8 @@ public class Convocation extends BaseEntity<Long> {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date sentAt;
+
+
+     */
 
 }

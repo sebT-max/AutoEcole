@@ -1,6 +1,7 @@
 package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
+import com.example.AutoEcole.dal.domain.enum_.CodePromoStatut;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,5 +24,5 @@ public class CodePromo  extends BaseEntity<Long> {
     Date expiry_date;
     @Column(name = "codePromo_statut")
     @Enumerated(EnumType.STRING)
-    private String codePromoStatut;
+    private CodePromoStatut codePromoStatut;
 }

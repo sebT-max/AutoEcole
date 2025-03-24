@@ -5,7 +5,6 @@ import com.example.AutoEcole.api.model.Stage.CreateStageResponseBody;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.dal.domain.entity.*;
 import com.example.AutoEcole.dal.repository.StageRepository;
-import com.example.AutoEcole.dal.specifications.StageSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -93,11 +92,14 @@ public class StageServiceImpl implements StageService {
         }
         return false;  // Booking not found
     }
+    /*
     @Override
     public List<Stage> searchStages(String entreprise, String localisation, Integer duree, LocalDate dateDebut) {
         Specification<Stage> spec = StageSpecification.filterBy();
         return stageRepository.findAll(spec);
     }
+
+     */
 
 }
 

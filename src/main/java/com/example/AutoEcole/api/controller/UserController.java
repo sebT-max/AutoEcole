@@ -34,8 +34,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestBody @Valid RegisterRequestBody request){
-        Role role = roleService.findRoleByName("PASSENGER");
-        Long id = userService.register(request.toEntity(role));
+        Long id = userService.register(request);
         return ResponseEntity.ok(id);
     }
 
@@ -71,7 +70,7 @@ public class UserController {
         UserResponseBody user = UserResponseBody.fromEntity(userService.findById(id));
         return ResponseEntity.ok(user);
     }
-
+/*
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody @Valid RegisterRequestBody request){
@@ -79,6 +78,8 @@ public class UserController {
         boolean response = userService.update(id, request.toEntity(role));
         return ResponseEntity.ok(response);
     }
+
+ */
 
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/client/dashboard")

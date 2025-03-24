@@ -1,11 +1,10 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
-import com.example.AutoEcole.bll.exception.alreadyExist.AlreadyExistException;
-import com.example.AutoEcole.bll.exception.ressourceNotFound.RessourceNotFoundException;
+import com.example.AutoEcole.Exception.alreadyExist.AlreadyExistException;
+import com.example.AutoEcole.Exception.ressourceNotFound.RessourceNotFoundException;
 import com.example.AutoEcole.bll.service.RoleService;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.repository.RoleRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +25,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findRoleByName(String name) {
-        if(!roleRepository.existRoleByName(name)){
-            throw new RessourceNotFoundException("This role does not exist");
-        }else{
-            return roleRepository.findRoleByName(name);
-        }
+        return roleRepository.findRoleByName(name)
+                .orElseThrow(() -> new RessourceNotFoundException("Ce role n'existe pas: " + name));
     }
+
 
     @Override
     public Role findById(Long id) {

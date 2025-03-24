@@ -1,8 +1,7 @@
 package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
-import com.example.AutoEcole.dal.domain.enum_.DevisStatut;
-import com.example.AutoEcole.dal.domain.enum_.StageType;
+import com.example.AutoEcole.dal.domain.enum_.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +36,7 @@ public class Stage extends BaseEntity<Long> {
     private String arrondissement;
 
     @Column
-    private int capacity;
+    private Integer capacity;
 
     @Column
     private Double price;
@@ -47,15 +46,15 @@ public class Stage extends BaseEntity<Long> {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private String twoDaysOfTheWeek ;
+    private TwoDaysOfTheWeek twoDaysOfTheWeek ;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private String month ;
+    private Month month ;
 
     @Column (name = "statut")
     @Enumerated(EnumType.STRING)
-    private String statut;
+    private StatutStage statutStage;
 
 
 }

@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString
 @MappedSuperclass
 @Getter
-public class BaseEntity<T extends Serializable> {
+public abstract class BaseEntity<T extends Serializable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +33,9 @@ public class BaseEntity<T extends Serializable> {
     @UpdateTimestamp
     @Setter
     private LocalDateTime updatedAt;
+
+    /*
+    public abstract Collection<? extends GrantedAuthority> getAuthorities();
+
+     */
 }

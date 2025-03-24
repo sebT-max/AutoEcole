@@ -48,6 +48,14 @@ public class JwtUtil {
     public String getUsername(String token) { return getClaims(token).getSubject(); }
 
     public Long getId(String token) { return getClaims(token).get("id", Long.class); }
+    public String getEmail(String token) { return getClaims(token).getSubject(); }
+
+    /**
+     * Validates the provided {@code JWT token}.
+     *
+     * @param token The {@code JWT token} to validate.
+     * @return True if the {@code JWT token} is valid, false otherwise.
+     */
 
     public boolean validateToken(String token) {
         Claims claims = getClaims(token);

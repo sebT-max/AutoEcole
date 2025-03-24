@@ -11,10 +11,10 @@ public interface StageService {
     CreateStageResponseBody createStage(CreateStageRequestBody request);
     public List<Stage> getAllStages();
     public Stage getStageById(Long id);
-
     boolean update(Long id, Stage stage);
-
     boolean delete(Long id);
-
+   /*
     List<Stage> searchStages(String entreprise, String localisation, Integer duree, LocalDate dateDebut);
+*/
 }
+

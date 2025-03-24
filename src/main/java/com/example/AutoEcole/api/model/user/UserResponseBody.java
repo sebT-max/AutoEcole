@@ -5,10 +5,12 @@ import com.example.AutoEcole.dal.domain.entity.User;
 
 import lombok.Data;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Data
 public class UserResponseBody {
     private Long id;
-
     private String lastname;
     private String firstname;
     private String email;

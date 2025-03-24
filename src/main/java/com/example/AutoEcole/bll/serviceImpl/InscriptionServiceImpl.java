@@ -1,24 +1,20 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
+import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.bll.service.InscriptionService;
+import com.example.AutoEcole.dal.domain.entity.CodePromo;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
-import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.repository.CodePromoRepository;
 import com.example.AutoEcole.dal.repository.InscriptionRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -27,45 +23,59 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final UserRepository userRepository;
     private final InscriptionRepository inscriptionRepository;
     private final StageRepository stageRepository;
+    private final CodePromoRepository codePromoRepository;
 
     @Override
     public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request) {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Récupérer le stage via son ID
+        if (user == null) {
+            throw new UserNotFoundException("User not authenticated");
+        }
+        // Vérifier que le stage existe
         Stage stage = stageRepository.findById(request.stageId())
-                .orElseThrow(() -> new RuntimeException("Voyage non trouvé"));
+                .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
 
+        // Vérifier que la capacité est suffisante
+        int requestedSeats = request.nbrPerson() != null ? request.nbrPerson() : 1; // Sécurité si null
+        if (stage.getCapacity() == null || stage.getCapacity() < requestedSeats) {
+            throw new RuntimeException("Capacité insuffisante. Il reste " + (stage.getCapacity() != null ? stage.getCapacity() : 0) + " places disponibles.");
+        }
 
-        if (stage.getCapacity() < request.nbrPerson()) {
-            // Calculer la capacité restante et inclure dans le message d'erreur
-            int remainingCapacity = stage.getCapacity();
-            throw new RuntimeException("Capacité insuffisante. Il reste " + remainingCapacity + " places disponibles.");
+        // Vérifier si un code promo est appliqué
+        CodePromo codePromo = null;
+        if (request.codePromoId() != null) {
+            codePromo = codePromoRepository.findById(request.codePromoId()).orElse(null);
         }
 
         // Créer l'inscription
         Inscription inscription = new Inscription();
         inscription.setStage(stage);
         inscription.setDateOfInscription(request.dateOfInscription());
+        inscription.setNbrPerson(requestedSeats);
+        inscription.setCodePromo(codePromo);
 
-        // Sauvegarder la réservation
+
+        // Sauvegarder l'inscription
         inscriptionRepository.save(inscription);
 
-        // Mettre à jour la capacité du voyage
-        stage.setCapacity(stage.getCapacity() - request.nbrPerson());
+        // Mettre à jour la capacité restante
+        stage.setCapacity(stage.getCapacity() - requestedSeats);
         stageRepository.save(stage);
 
         // Retourner la réponse
         return new CreateInscriptionResponseBody(
                 "Réservation effectuée avec succès !",
-                inscription.getId(),
-                inscription.getStage(),
+                inscription.getStage().getId(),
                 inscription.getDateOfInscription(),
-                inscription.getNbrPerson()
+                inscription.getNbrPerson(),
+                (inscription.getCodePromo() != null) ? inscription.getCodePromo().getId() : null
         );
     }
+}
 
+/*
     @Override
     public List<Inscription> getAllInscriptions() {
         // Récupération de l'utilisateur authentifié
@@ -141,3 +151,5 @@ public class InscriptionServiceImpl implements InscriptionService {
 //    }
 
 }
+
+ */

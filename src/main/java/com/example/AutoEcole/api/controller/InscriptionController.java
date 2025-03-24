@@ -8,6 +8,7 @@ import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +28,11 @@ public class InscriptionController {
 
     @PostMapping("/create")
     public ResponseEntity<CreateInscriptionResponseBody> createInscription(@RequestBody CreateInscriptionRequestBody request) {
-        User user = userService.findById(request.user().getId());
-        try {
-            CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new CreateInscriptionResponseBody(e.getMessage()));
-        }
+        User user = userService.findById(request.userId());
+        CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
+        return ResponseEntity.ok(response);
     }
+    /*
     @GetMapping("/all")
     @PreAuthorize("hasRole('OPERATOR')")
     public List<Inscription> getAllInscriptions(){
@@ -57,7 +55,7 @@ public class InscriptionController {
     public boolean deleteBooking(@PathVariable Long id){
         return inscriptionService.delete(id);
     }
-
+/*
     @PutMapping("/update/{id}")
     public ResponseEntity<Boolean> updateBooking(
             @PathVariable Long id,
@@ -67,15 +65,17 @@ public class InscriptionController {
         if (inscription == null) {
             return ResponseEntity.notFound().build();
         }
-        User user = userService.findById(request.user().getId());
+        User user = userService.findById(request.userId());
         Stage stage = stageService.getStageById(request.stageId());
 
         // Crée la nouvelle entité Booking avec les nouvelles valeurs, en conservant l'utilisateur existant
-        Boolean updatedBooking = inscriptionService.update(
+        Boolean updatedInscription = inscriptionService.update(
                 id, request.toEntity(user,stage));
 
         return ResponseEntity.ok(updatedBooking);
     }
+
+ */
 
 }
 

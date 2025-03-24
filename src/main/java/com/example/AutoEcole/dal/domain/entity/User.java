@@ -1,78 +1,88 @@
 package com.example.AutoEcole.dal.domain.entity;
-
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
+import com.example.AutoEcole.dal.domain.enum_.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+
+
 
 @Entity
-@NoArgsConstructor
-@EqualsAndHashCode
-@ToString
+@AllArgsConstructor
+@Getter @Setter
 @Table(name = "users")
+
 public class User extends BaseEntity<Long> implements UserDetails {
 
-    @Getter
-    @Setter
     @Column(name = "LASTNAME", nullable = false, length = 50)
     private String lastname;
 
-    @Getter
-    @Setter
+
     @Column(name = "FIRSTNAME", nullable = false, length = 50)
     private String firstname;
 
-    @Getter @Setter
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
-    @Setter
+
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Setter
+
     @Column(name = "TELEPHONE", nullable = false)
     private String telephone;
 
-    @Getter @Setter
+    @Column(name = "gender",nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    /**
+     * The birthdate of the {@code user}.
+     */
+    @Column(name ="birthdate",nullable = false)
+    private LocalDateTime birthdate;
+
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 
     private boolean acceptTerms;
 
-    public User(String lastname, String firstname, String email, String password,Role role){
+    public User() {
         this.lastname = lastname;
         this.firstname = firstname;
         this.email = email;
         this.password = password;
+        this.telephone = telephone;
+        this.gender = gender;
+        this.birthdate = birthdate;
         this.role = role;
-    }
-
-    public User(String lastname, String firstname, String email, com.example.AutoEcole.dal.domain.entity.Role role){
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.email = email;
-        this.role = role;
+        this.acceptTerms = acceptTerms;
     }
 
     @Override
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.getName()));
+        return Collections.singleton(new SimpleGrantedAuthority(role.getName()));
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
+    /**
+     * Returns the password used to authenticate the user.
+     *
+     * @return the password
+     */
+
+
+    @Override    public boolean isAccountNonExpired() {
         return true;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
+    @Override    public boolean isAccountNonLocked() {
         return true;
     }
 
@@ -81,23 +91,24 @@ public class User extends BaseEntity<Long> implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
+    @Override    public boolean isEnabled() {
         return true;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+    /**
+     * Returns the authorities granted to the user. Cannot return <code>null</code>.
+     *
+     * @return the authorities, sorted by natural key (never <code>null</code>)
+     */
 
-//    public Role getRole(){
-//        return role;
-//    }
 
     @Override
     public String getUsername() {
         return email;
-    }
 
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
 }

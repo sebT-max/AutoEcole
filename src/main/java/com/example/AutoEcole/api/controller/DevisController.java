@@ -38,6 +38,7 @@ public class DevisController {
         return devisService.getDevisById(id);
     }
 
+    /*
     @PutMapping("/update/{id}")
     public ResponseEntity<Boolean> updateBooking(
             @PathVariable Long id,
@@ -52,6 +53,8 @@ public class DevisController {
 
         return ResponseEntity.ok(updatedPlanet);
     }
+
+     */
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('OPERATOR')")
     public boolean deletePlanet(@PathVariable Long id){

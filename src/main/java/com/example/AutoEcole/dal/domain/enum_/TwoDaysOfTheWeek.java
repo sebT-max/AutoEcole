@@ -1,6 +1,6 @@
 package com.example.AutoEcole.dal.domain.enum_;
 
-public enum twoDaysOfTheWeek {
+public enum TwoDaysOfTheWeek {
     LUNDI_MARDI,
     MARDI_MERCREDI,
     MERCREDI_JEUDI,

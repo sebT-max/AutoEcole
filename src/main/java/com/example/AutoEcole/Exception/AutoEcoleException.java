@@ -1,4 +1,4 @@
-package com.example.AutoEcole.bll.exception;
+package com.example.AutoEcole.Exception;
 
 public class AutoEcoleException extends RuntimeException{
     private int status;

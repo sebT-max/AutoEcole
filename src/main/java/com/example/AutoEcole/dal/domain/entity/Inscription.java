@@ -1,18 +1,13 @@
 package com.example.AutoEcole.dal.domain.entity;
-
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
 import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.User;
-
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -37,12 +32,11 @@ public class Inscription extends BaseEntity<Long> {
     private LocalDate dateOfInscription;
 
     @Column
-    Integer nbrPerson;
+    private Integer nbrPerson;
 
-    @OneToOne(mappedBy = "code_promo")
+    @OneToOne
+    @JoinColumn(name = "code_promo_id") // Correction du mapping
     private CodePromo codePromo;
 
-    @NotNull
-    private Boolean acceptTerms;
 
 }

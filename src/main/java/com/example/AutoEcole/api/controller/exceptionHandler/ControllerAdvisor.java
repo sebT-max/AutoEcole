@@ -1,6 +1,6 @@
 package com.example.AutoEcole.api.controller.exceptionHandler;
 
-import com.example.AutoEcole.bll.exception.AutoEcoleException;
+import com.example.AutoEcole.Exception.AutoEcoleException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 

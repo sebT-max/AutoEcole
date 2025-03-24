@@ -1,6 +1,6 @@
-package com.example.AutoEcole.bll.exception.alreadyExist;
+package com.example.AutoEcole.Exception.alreadyExist;
 
-import com.example.AutoEcole.bll.exception.AutoEcoleException;
+import com.example.AutoEcole.Exception.AutoEcoleException;
 
 public class AlreadyExistException extends AutoEcoleException {
 
