@@ -5,6 +5,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +43,8 @@ public class Entreprise extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private boolean acceptTerms;
+
+
 /*
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

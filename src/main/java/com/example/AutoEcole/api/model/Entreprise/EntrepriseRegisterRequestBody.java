@@ -24,11 +24,9 @@ public record EntrepriseRegisterRequestBody(
 
     @NotBlank(message = "The telephone can not be empty")
     String telephone,
-/*
+
     @NotNull(message = "Role must not be null")  // Vérifie que le rôle est présent
     Role role,
-
- */
 
     @AssertTrue(message = "Vous devez accepter les conditions")
     boolean acceptTerms
@@ -36,7 +34,7 @@ public record EntrepriseRegisterRequestBody(
 ) {
 
         public Entreprise toEntity() {
-            return new Entreprise(name, email, password,telephone,acceptTerms) {
+            return new Entreprise(name, email, password,telephone,role,acceptTerms) {
                 /**
                  * Returns the authorities granted to the user. Cannot return <code>null</code>.
                  *

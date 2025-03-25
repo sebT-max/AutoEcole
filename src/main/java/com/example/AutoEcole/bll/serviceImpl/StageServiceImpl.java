@@ -25,7 +25,7 @@ public class StageServiceImpl implements StageService {
     @Override
     public CreateStageResponseBody createStage(CreateStageRequestBody request) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Stage stage = new Stage();
         stage.setDateDeStage(request.dateDeStage());
@@ -39,7 +39,6 @@ public class StageServiceImpl implements StageService {
        //retour
 
         return new CreateStageResponseBody(
-                "Le voyage a bien été créé",
                 stage.getDateDeStage(),
                 stage.getPrice(),
                 stage.getCity(),

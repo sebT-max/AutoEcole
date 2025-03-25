@@ -13,12 +13,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/V1/journey")
+@RequestMapping("api/V1/stages")
 public class StageController {
     private final StageService stageService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('OPERATOR')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CreateStageResponseBody> createBooking(@RequestBody CreateStageRequestBody request){
         return ResponseEntity.ok(stageService.createStage(request));
     }
