@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('PASSENGER') or hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('CLIENT') or hasRole('ENTREPRISE')")
     public ResponseEntity<UserResponseBody> me(){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseBody>> getAll(){
         return ResponseEntity.ok(
                 userService.findAll().stream()
@@ -92,7 +92,4 @@ public class UserController {
     public ResponseEntity<String> espaceEntreprise() {
         return ResponseEntity.ok("Bienvenue dans l’espace entreprise !");
     }
-
-    //TODO DELETE
-
 }

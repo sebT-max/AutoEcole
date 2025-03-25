@@ -45,8 +45,9 @@ public class EntrepriseServiceImpl implements EntrepriseService {
         }
 
         // Récupérer le rôle depuis la base
-        Role role = roleRepository.findRoleByName(requestBody.role().getName())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        //Role role = roleRepository.findRoleByName(requestBody.role().getName())
+         //       .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Créer l’entité utilisateur
         Entreprise newEntreprise = requestBody.toEntity();
