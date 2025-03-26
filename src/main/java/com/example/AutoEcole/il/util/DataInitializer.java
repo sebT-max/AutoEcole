@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import java.time.LocalDate;
 
-import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Component
@@ -25,10 +25,10 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(userRepository.count() == 0){
-            Role roleClient = new Role();
-            roleClient.setName("CLIENT");
-            roleClient.setDescription("Il s'agit du particulier qui doit suivre un stage");
-            roleRepository.save(roleClient);
+            Role roleParticulier = new Role();
+            roleParticulier.setName("PARTICULIER");
+            roleParticulier.setDescription("Il s'agit du particulier qui doit suivre un stage");
+            roleRepository.save(roleParticulier);
 
             Role roleAdmin = new Role();
             roleAdmin.setName("ADMIN");
@@ -36,8 +36,8 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.save(roleAdmin);
 
             Role roleCompany = new Role();
-            roleCompany.setName("roleCompany");
-            roleCompany.setDescription("Il s'agit d'un employé d'une entreprise qui doit récupérer des points de permis");
+            roleCompany.setName("ENTREPRISE");
+            roleCompany.setDescription("Il s'agit d'une entreprise dont un employé doit/ou des employés doivent récupérer des points de permis");
             roleRepository.save(roleCompany);
             //test
 
@@ -47,10 +47,9 @@ public class DataInitializer implements CommandLineRunner {
             client01.setEmail("jce.dbg@aristo.org");
             client01.setPassword(passwordEncoder.encode("Chichis1234="));
             client01.setTelephone("0455/22.22.22");
-            client01.setGender(Gender.MALE);
-            client01.setBirthdate(LocalDateTime.of(1985, 5, 20, 0, 0)); // Ex: 20 mai 1985
-            client01.setRole(roleClient);
+            client01.setBirthdate(LocalDate.of(1985, 5, 20)); // Ex: 20 mai 1985
             client01.setAcceptTerms(true);
+            client01.setRole(roleParticulier);
             userRepository.save(client01);
 
             User admin01 = new User();
@@ -59,10 +58,9 @@ public class DataInitializer implements CommandLineRunner {
             admin01.setEmail("vass.pet@operator.org");
             admin01.setPassword(passwordEncoder.encode("Cccp1917"));
             admin01.setTelephone("0455/22.22.22");
-            admin01.setGender(Gender.MALE);
-            admin01.setBirthdate(LocalDateTime.of(1986, 5, 2, 0, 0)); // Ex: 20 mai 1985
-            admin01.setRole(roleAdmin);
+            admin01.setBirthdate(LocalDate.of(1986, 5, 2)); // Ex: 20 mai 1985
             admin01.setAcceptTerms(true);
+            admin01.setRole(roleAdmin);
             userRepository.save(admin01);
 
             Entreprise companyClient1 = new Entreprise();

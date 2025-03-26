@@ -1,12 +1,11 @@
 package com.example.AutoEcole.dal.domain.entity;
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
-import com.example.AutoEcole.dal.domain.enum_.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -37,32 +36,20 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @Column(name = "TELEPHONE", nullable = false)
     private String telephone;
 
-    @Column(name = "gender",nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
     /**
      * The birthdate of the {@code user}.
      */
     @Column(name ="birthdate",nullable = false)
-    private LocalDateTime birthdate;
+    private LocalDate birthdate;
+
+    private boolean acceptTerms;
 
     @ManyToOne
     @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 
-    private boolean acceptTerms;
-
     public User() {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.email = email;
-        this.password = password;
-        this.telephone = telephone;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.role = role;
-        this.acceptTerms = acceptTerms;
+
     }
 
     @Override

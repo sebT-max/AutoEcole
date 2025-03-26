@@ -37,12 +37,12 @@ public class Entreprise extends BaseEntity<Long> {
     @Column(nullable = false)
     private String telephone;
 
+    @Column(nullable = false)
+    private boolean acceptTerms;
+
     @ManyToOne
     @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
-
-    @Column(nullable = false)
-    private boolean acceptTerms;
 
 
 /*

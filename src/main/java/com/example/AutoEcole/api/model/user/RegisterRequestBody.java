@@ -1,19 +1,13 @@
 package com.example.AutoEcole.api.model.user;
-
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
-import com.example.AutoEcole.dal.domain.enum_.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.AssertTrue;
-import org.springframework.security.core.GrantedAuthority;
-
+import org.springframework.lang.Contract;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+
 
 public record RegisterRequestBody(
 
@@ -33,31 +27,20 @@ public record RegisterRequestBody(
         @NotBlank(message = "The telephone can not be empty")
         String telephone,
 
-        @NotBlank(message = "The gender can not be empty")
-        Gender gender,
-
-        @NotBlank(message = "The birthdate can not be empty")
-        LocalDate birhtdate,
-
-        @NotNull(message = "Role must not be null")  // Vérifie que le rôle est présent
-        Role role,
+        @NotNull(message = "The birthdate can not be empty")
+        LocalDate birthdate,
 
         @AssertTrue(message = "Vous devez accepter les conditions")
-        boolean acceptTerms
+        boolean acceptTerms,
+
+        @NotNull(message = "Role must not be null")  // Vérifie que le rôle est présent
+        Long roleId
 
 ) {
-
-        public User toEntity() {
-                return new User(lastname, firstname, email, password,telephone,gender, LocalDateTime.from(birhtdate),role,acceptTerms) {
-                        /**
-                         * Returns the authorities granted to the user. Cannot return <code>null</code>.
-                         *
-                         * @return the authorities, sorted by natural key (never <code>null</code>)
-                         */
-                        @Override
-                        public Collection<? extends GrantedAuthority> getAuthorities() {
-                                return List.of();
-                        }
-                };
+@Contract
+@NotNull
+        public User toEntity(Role role) {
+                return new User(lastname, firstname, email, password,telephone,LocalDate.from(birthdate),acceptTerms,role);
+                }
         }
-}
+

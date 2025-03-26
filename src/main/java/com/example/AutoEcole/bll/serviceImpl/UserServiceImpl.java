@@ -54,11 +54,12 @@ public class UserServiceImpl implements UserService {
         }
 
         // Récupérer le rôle depuis la base
-        Role role = roleRepository.findRoleByName(requestBody.role().getName())
+
+        Role role = roleRepository.findById(requestBody.roleId())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Créer l’entité utilisateur
-        User newUser = requestBody.toEntity();
+        User newUser = requestBody.toEntity(role);
 
         // Hasher le mot de passe (si tu utilises Spring Security)
         newUser.setPassword(passwordEncoder.encode(requestBody.password()));

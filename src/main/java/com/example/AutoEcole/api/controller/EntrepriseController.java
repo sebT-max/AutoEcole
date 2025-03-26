@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/V1/entreprise")
+@RequestMapping("/api/V1/company")
 public class EntrepriseController {
 private final EntrepriseService entrepriseService;
 
@@ -21,4 +21,5 @@ private final EntrepriseService entrepriseService;
         Long id = entrepriseService.register(request);
         return ResponseEntity.ok(id);
     }
+
 }

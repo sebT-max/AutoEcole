@@ -44,13 +44,13 @@ public class EntrepriseServiceImpl implements EntrepriseService {
             throw new IllegalArgumentException("Email already in use.");
         }
 
-        // Récupérer le rôle depuis la base
+        // Récupérer le rôle_id depuis la base
 
-        //Role role = roleRepository.findRoleByName(requestBody.role().getName())
-         //       .orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleRepository.findById(requestBody.roleId())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Créer l’entité utilisateur
-        Entreprise newEntreprise = requestBody.toEntity();
+        Entreprise newEntreprise = requestBody.toEntity(role);
 
         // Hasher le mot de passe (si tu utilises Spring Security)
         newEntreprise.setPassword(passwordEncoder.encode(requestBody.password()));
