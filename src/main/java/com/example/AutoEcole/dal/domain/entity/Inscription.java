@@ -34,6 +34,10 @@ public class Inscription extends BaseEntity<Long> {
     @Column
     private Integer nbrPerson;
 
+    @Column(name = "Type_de_stage")
+    @Enumerated(EnumType.STRING)
+    private String stageType;
+
     @OneToOne
     @JoinColumn(name = "code_promo_id") // Correction du mapping
     private CodePromo codePromo;

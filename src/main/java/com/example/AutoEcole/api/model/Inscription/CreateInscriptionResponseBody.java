@@ -1,16 +1,17 @@
 package com.example.AutoEcole.api.model.Inscription;
 
-import com.example.AutoEcole.dal.domain.entity.Inscription;
-import com.example.AutoEcole.dal.domain.entity.Stage;
-import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
-import org.springframework.security.core.userdetails.User;
+import com.example.AutoEcole.dal.domain.entity.CodePromo;
+import com.example.AutoEcole.dal.domain.enum_.StageType;
 
 import java.time.LocalDate;
 
 public record CreateInscriptionResponseBody(
         String message,
+        Long id,
+        Long userId,
         Long stageId,
-        LocalDate dateOfInscription,
-        Long codePromoId
+        StageType stageType,
+        LocalDate dateOfInscription
+        //CodePromo codePromo
 
 ) {}

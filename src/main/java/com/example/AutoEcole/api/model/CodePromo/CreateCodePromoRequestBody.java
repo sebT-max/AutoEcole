@@ -1,4 +1,10 @@
 package com.example.AutoEcole.api.model.CodePromo;
 
-public record CreateCodePromoRequestBody() {
+import java.time.LocalDate;
+
+public record CreateCodePromoRequestBody(
+        String code,
+        Integer reduction,
+        LocalDate expiry_date
+        ) {
 }

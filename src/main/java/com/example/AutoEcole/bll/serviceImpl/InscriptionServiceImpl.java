@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class InscriptionServiceImpl implements InscriptionService {
@@ -33,47 +36,54 @@ public class InscriptionServiceImpl implements InscriptionService {
         if (user == null) {
             throw new UserNotFoundException("User not authenticated");
         }
+
         // Vérifier que le stage existe
         Stage stage = stageRepository.findById(request.stageId())
                 .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
 
-        // Vérifier que la capacité est suffisante
-        //int requestedSeats = request.nbrPerson() != null ? request.nbrPerson() : 1; // Sécurité si null
-        //if (stage.getCapacity() == null || stage.getCapacity() < requestedSeats) {
-         //   throw new RuntimeException("Capacité insuffisante. Il reste " + (stage.getCapacity() != null ? stage.getCapacity() : 0) + " places disponibles.");
-        //}
-
-        // Vérifier si un code promo est appliqué
+        /*
+        Vérifier si un code promo est appliqué
         CodePromo codePromo = null;
-        if (request.codePromoId() != null) {
-            codePromo = codePromoRepository.findById(request.codePromoId()).orElse(null);
+        if (request.codePromo() != null) {
+            codePromo = codePromoRepository.findByCode(request.codePromo().getCode()); // Recherche par code promo
         }
+
+
+
+        // Si un code promo est trouvé, vérifier sa validité (expiration)
+
+        if (codePromo != null && codePromo.getExpiry_date().isAfter(LocalDate.now())) {
+            // Appliquer la réduction (si nécessaire)
+        } else if (codePromo != null) {
+            throw new RuntimeException("Le code promo est expiré.");
+        }
+
+         */
 
         // Créer l'inscription
         Inscription inscription = new Inscription();
         inscription.setUser(user);
         inscription.setStage(stage);
+        inscription.setStageType(request.stageType().name());
         inscription.setDateOfInscription(request.dateOfInscription());
-        //inscription.setNbrPerson(requestedSeats);
-        inscription.setCodePromo(codePromo);
-
+        //inscription.setCodePromo(codePromo);
 
         // Sauvegarder l'inscription
         inscriptionRepository.save(inscription);
 
-        // Mettre à jour la capacité restante
-        //stage.setCapacity(stage.getCapacity() - requestedSeats);
-        //stageRepository.save(stage);
-
         // Retourner la réponse
         return new CreateInscriptionResponseBody(
                 "Réservation effectuée avec succès !",
+                inscription.getId(),
+                inscription.getUser().getId(),
                 inscription.getStage().getId(),
-                inscription.getDateOfInscription(),
-                (inscription.getCodePromo() != null) ? inscription.getCodePromo().getId() : null
+                inscription.getStage().getStageType(),
+                inscription.getDateOfInscription()
+               // inscription.getCodePromo()
         );
     }
 }
+
 
 /*
     @Override

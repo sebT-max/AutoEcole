@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -19,9 +20,16 @@ import java.util.Date;
 @Getter
 @Setter
 public class CodePromo  extends BaseEntity<Long> {
-    Long code;
-    Integer reduction;
-    Date expiry_date;
+
+    @Column(nullable = false)
+    private String code;
+
+    @Column(nullable = false)
+    private Integer reduction;
+
+    @Column(nullable = false)
+    private LocalDate expiry_date;
+
     @Column(name = "codePromo_statut")
     @Enumerated(EnumType.STRING)
     private CodePromoStatut codePromoStatut;

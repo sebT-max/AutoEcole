@@ -5,15 +5,40 @@ import com.example.AutoEcole.api.model.CodePromo.CreateCodePromoResponseBody;
 import com.example.AutoEcole.bll.service.CodePromoService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.CodePromo;
+import com.example.AutoEcole.dal.domain.entity.Stage;
+import com.example.AutoEcole.dal.repository.CodePromoRepository;
+import com.example.AutoEcole.dal.repository.StageRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class CodePromoServiceImpl implements CodePromoService {
-    @Override
-    public CreateCodePromoResponseBody createCodePromo(CreateCodePromoRequestBody request) {
-        return null;
+
+    private final CodePromoRepository codePromoRepository;
+
+    public CodePromoServiceImpl(CodePromoRepository codePromoRepository) {
+        this.codePromoRepository = codePromoRepository;
     }
 
+    @Override
+    public CreateCodePromoResponseBody createCodePromo(CreateCodePromoRequestBody request) {
+        //User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CodePromo codePromo = new CodePromo();
+        codePromo.setCode(request.code());
+        codePromo.setReduction(request.reduction());
+        codePromo.setExpiry_date(request.expiry_date());
+        codePromoRepository.save(codePromo);
+
+        return new CreateCodePromoResponseBody(
+                codePromo.getCode(),
+                codePromo.getReduction(),
+                codePromo.getExpiry_date()
+        );
+    }
+}
+/*
     @Override
     public List<CodePromo> getAllCodePromos() {
         return List.of();
@@ -33,4 +58,6 @@ public class CodePromoServiceImpl implements CodePromoService {
     public boolean delete(Long id) {
         return false;
     }
-}
+
+ */
+
