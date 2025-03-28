@@ -56,7 +56,7 @@ public class DevisController {
 
      */
     @DeleteMapping("delete/{id}")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean deletePlanet(@PathVariable Long id){
         return devisService.delete(id);
     }

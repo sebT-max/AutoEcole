@@ -7,13 +7,13 @@ import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.dal.domain.entity.CodePromo;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
+import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.dal.repository.CodePromoRepository;
 import com.example.AutoEcole.dal.repository.InscriptionRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,10 +38,10 @@ public class InscriptionServiceImpl implements InscriptionService {
                 .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
 
         // Vérifier que la capacité est suffisante
-        int requestedSeats = request.nbrPerson() != null ? request.nbrPerson() : 1; // Sécurité si null
-        if (stage.getCapacity() == null || stage.getCapacity() < requestedSeats) {
-            throw new RuntimeException("Capacité insuffisante. Il reste " + (stage.getCapacity() != null ? stage.getCapacity() : 0) + " places disponibles.");
-        }
+        //int requestedSeats = request.nbrPerson() != null ? request.nbrPerson() : 1; // Sécurité si null
+        //if (stage.getCapacity() == null || stage.getCapacity() < requestedSeats) {
+         //   throw new RuntimeException("Capacité insuffisante. Il reste " + (stage.getCapacity() != null ? stage.getCapacity() : 0) + " places disponibles.");
+        //}
 
         // Vérifier si un code promo est appliqué
         CodePromo codePromo = null;
@@ -51,9 +51,10 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         // Créer l'inscription
         Inscription inscription = new Inscription();
+        inscription.setUser(user);
         inscription.setStage(stage);
         inscription.setDateOfInscription(request.dateOfInscription());
-        inscription.setNbrPerson(requestedSeats);
+        //inscription.setNbrPerson(requestedSeats);
         inscription.setCodePromo(codePromo);
 
 
@@ -61,15 +62,14 @@ public class InscriptionServiceImpl implements InscriptionService {
         inscriptionRepository.save(inscription);
 
         // Mettre à jour la capacité restante
-        stage.setCapacity(stage.getCapacity() - requestedSeats);
-        stageRepository.save(stage);
+        //stage.setCapacity(stage.getCapacity() - requestedSeats);
+        //stageRepository.save(stage);
 
         // Retourner la réponse
         return new CreateInscriptionResponseBody(
                 "Réservation effectuée avec succès !",
                 inscription.getStage().getId(),
                 inscription.getDateOfInscription(),
-                inscription.getNbrPerson(),
                 (inscription.getCodePromo() != null) ? inscription.getCodePromo().getId() : null
         );
     }

@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('CLIENT') or hasRole('ENTREPRISE')")
+    @PreAuthorize("hasRole('PARTICULIER') or hasRole('ENTREPRISE')")
     public ResponseEntity<UserResponseBody> me(){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('PASSENGER') or hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseBody> get(@PathVariable Long id){
         UserResponseBody user = UserResponseBody.fromEntity(userService.findById(id));
         return ResponseEntity.ok(user);
@@ -81,8 +81,8 @@ public class UserController {
 
  */
 
-    @PreAuthorize("hasRole('CLIENT')")
-    @GetMapping("/client/dashboard")
+    @PreAuthorize("hasRole('PARTICULIER')")
+    @GetMapping("/particulier/dashboard")
     public ResponseEntity<String> espaceClient() {
         return ResponseEntity.ok("Bienvenue dans l’espace client !");
     }

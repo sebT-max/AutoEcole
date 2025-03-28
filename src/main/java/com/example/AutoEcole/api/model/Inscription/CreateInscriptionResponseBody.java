@@ -11,7 +11,6 @@ public record CreateInscriptionResponseBody(
         String message,
         Long stageId,
         LocalDate dateOfInscription,
-        Integer nbrPerson,
         Long codePromoId
 
 ) {}

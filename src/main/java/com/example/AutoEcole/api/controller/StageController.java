@@ -29,14 +29,13 @@ public class StageController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('OPERATOR')")
-    public Stage getJourneyById(@PathVariable Long id){
+    public Stage getStageById(@PathVariable Long id){
         return stageService.getStageById(id);
     }
 
     @DeleteMapping("delete/{id}")
-    @PreAuthorize("hasRole('OPERATOR')")
-    public boolean deleteJourney(@PathVariable Long id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public boolean deleteStage(@PathVariable Long id){
         return stageService.delete(id);
     }
 }

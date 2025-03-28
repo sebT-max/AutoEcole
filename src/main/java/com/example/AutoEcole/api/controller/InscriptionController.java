@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/V1/inscription")
+@RequestMapping("api/V1/inscriptions")
 
 public class InscriptionController {
     private final InscriptionService inscriptionService;
@@ -28,30 +28,29 @@ public class InscriptionController {
 
     @PostMapping("/create")
     public ResponseEntity<CreateInscriptionResponseBody> createInscription(@RequestBody CreateInscriptionRequestBody request) {
-        User user = userService.findById(request.userId());
         CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
         return ResponseEntity.ok(response);
     }
     /*
     @GetMapping("/all")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Inscription> getAllInscriptions(){
         return inscriptionService.getAllInscriptions();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Inscription getInscriptionById(@PathVariable Long id){
         return inscriptionService.getBookingById(id);
     }
 
     @GetMapping("/users/{userId}")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Inscription> getInscriptionsByUserId(@PathVariable Long userId){
         return inscriptionService.getInscriptionsByUserId(userId);
     }
     @DeleteMapping("delete/{id}")
-    @PreAuthorize("hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteBooking(@PathVariable Long id){
         return inscriptionService.delete(id);
     }

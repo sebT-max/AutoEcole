@@ -10,7 +10,6 @@ public record CreateInscriptionRequestBody(
         Long userId,
         Long stageId,
         LocalDate dateOfInscription,
-        Integer nbrPerson,
         Long codePromoId
 ) {}
 
