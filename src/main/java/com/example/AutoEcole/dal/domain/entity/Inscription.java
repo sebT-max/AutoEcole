@@ -1,6 +1,7 @@
 package com.example.AutoEcole.dal.domain.entity;
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
 import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
+import com.example.AutoEcole.dal.domain.enum_.StageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class Inscription extends BaseEntity<Long> {
 
     @Column(name = "Type_de_stage")
     @Enumerated(EnumType.STRING)
-    private String stageType;
+    private StageType stageType;
 
     @OneToOne
     @JoinColumn(name = "code_promo_id") // Correction du mapping

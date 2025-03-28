@@ -8,6 +8,7 @@ import com.example.AutoEcole.dal.domain.entity.CodePromo;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.domain.enum_.StageType;
 import com.example.AutoEcole.dal.repository.CodePromoRepository;
 import com.example.AutoEcole.dal.repository.InscriptionRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
@@ -64,7 +65,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         Inscription inscription = new Inscription();
         inscription.setUser(user);
         inscription.setStage(stage);
-        inscription.setStageType(request.stageType().name());
+        inscription.setStageType(stage.getStageType());
         inscription.setDateOfInscription(request.dateOfInscription());
         //inscription.setCodePromo(codePromo);
 
