@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,14 @@ public class InscriptionController {
         CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
         return ResponseEntity.ok(response);
     }
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/me")
+    public ResponseEntity<List<Inscription>> getInscriptionsByUser(@AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = userService.getUserIdByUsername(userDetails.getUsername());
+        List<Inscription> inscriptions = inscriptionService.getInscriptionsByUserId(userId);
+        return ResponseEntity.ok(inscriptions);
+    }
+
     /*
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
@@ -44,11 +54,7 @@ public class InscriptionController {
         return inscriptionService.getBookingById(id);
     }
 
-    @GetMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<Inscription> getInscriptionsByUserId(@PathVariable Long userId){
-        return inscriptionService.getInscriptionsByUserId(userId);
-    }
+
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteBooking(@PathVariable Long id){

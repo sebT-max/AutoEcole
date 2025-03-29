@@ -10,9 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface InscriptionRepository extends JpaRepository<Inscription, Long> {
-    /*
-    @Query("SELECT i FROM Inscription i JOIN FETCH r.passengers p JOIN FETCH r.reservationActivities ra WHERE r.id = :id")
-    List<Inscription> findByUserIdWithDetails(Long userId);
 
-     */
+    @Query("SELECT i FROM Inscription i WHERE i.user.id = :userId")
+    List<Inscription> findByUserIdWithDetails(Long userId);
 }

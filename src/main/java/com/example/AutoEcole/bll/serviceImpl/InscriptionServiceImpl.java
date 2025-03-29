@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,9 +84,15 @@ public class InscriptionServiceImpl implements InscriptionService {
                // inscription.getCodePromo()
         );
     }
+    @Override
+    public List<Inscription> getInscriptionsByUserId(Long userId){
+        List<Inscription> inscriptions = inscriptionRepository.findByUserIdWithDetails(userId);
+        if (inscriptions.isEmpty()) {
+            throw new RuntimeException("Aucune réservation trouvée pour l'utilisateur avec l'ID : " + userId);
+        }
+        return inscriptions;
+    }
 }
-
-
 /*
     @Override
     public List<Inscription> getAllInscriptions() {
@@ -108,14 +115,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         return inscriptionRepository.findAll();
     }
 
-    @Override
-    public List<Inscription> getInscriptionsByUserId(Long userId){
-        List<Inscription> bookings = inscriptionRepository.findByUserIdWithDetails(userId);
-        if (bookings.isEmpty()) {
-            throw new RuntimeException("Aucune réservation trouvée pour l'utilisateur avec l'ID : " + userId);
-        }
-        return bookings;
-    }
+
 
 
     @Override

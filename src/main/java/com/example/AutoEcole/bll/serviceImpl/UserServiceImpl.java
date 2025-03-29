@@ -100,6 +100,12 @@ public class UserServiceImpl implements UserService {
     }
 
  */
+    @Override
+    public Long getUserIdByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(User::getId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé : " + username));
+    }
 
     @Override
     public boolean delete(Long id) {

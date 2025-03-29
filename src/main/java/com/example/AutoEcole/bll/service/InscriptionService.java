@@ -10,10 +10,11 @@ import java.util.List;
 public interface InscriptionService {
 
     CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request);
-/*
+    List<Inscription> getInscriptionsByUserId(Long userId);
+    /*
     List<Inscription> getAllInscriptions();
 
-    List<Inscription> getInscriptionsByUserId(Long userId);
+
 
     Inscription getBookingById(Long id);
 

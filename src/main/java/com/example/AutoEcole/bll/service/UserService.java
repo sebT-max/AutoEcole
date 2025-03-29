@@ -18,6 +18,7 @@ public interface UserService extends UserDetailsService {
     boolean update(Long id, User user);
 
      */
+    public Long getUserIdByUsername(String username);
     boolean delete(Long id);
 
 }
