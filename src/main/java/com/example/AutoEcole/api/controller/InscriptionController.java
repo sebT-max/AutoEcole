@@ -33,7 +33,8 @@ public class InscriptionController {
         CreateInscriptionResponseBody response = inscriptionService.createInscription(request);
         return ResponseEntity.ok(response);
     }
-    @PreAuthorize("hasRole('CLIENT')")
+
+    @PreAuthorize("hasRole('PARTICULIER')")
     @GetMapping("/me")
     public ResponseEntity<List<Inscription>> getInscriptionsByUser(@AuthenticationPrincipal UserDetails userDetails) {
         Long userId = userService.getUserIdByUsername(userDetails.getUsername());

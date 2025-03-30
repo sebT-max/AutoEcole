@@ -19,9 +19,9 @@ import java.util.Date;
 @Table(name = "stage")
 
 public class Stage extends BaseEntity<Long> {
-    @Column
-    @Enumerated(EnumType.STRING)
-    private StageType stageType;
+    //@Column
+    //@Enumerated(EnumType.STRING)
+    //private StageType stageType;
 
     @Column
     private LocalDate dateDeStage;

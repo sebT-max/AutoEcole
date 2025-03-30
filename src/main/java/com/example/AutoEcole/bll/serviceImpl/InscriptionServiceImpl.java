@@ -1,5 +1,6 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
+import com.example.AutoEcole.Exception.StageNotFoundException.StageNotFoundException;
 import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
@@ -8,6 +9,7 @@ import com.example.AutoEcole.dal.domain.entity.CodePromo;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
 import com.example.AutoEcole.dal.domain.enum_.StageType;
 import com.example.AutoEcole.dal.repository.CodePromoRepository;
 import com.example.AutoEcole.dal.repository.InscriptionRepository;
@@ -41,7 +43,7 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         // Vérifier que le stage existe
         Stage stage = stageRepository.findById(request.stageId())
-                .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
+                .orElseThrow(() -> new StageNotFoundException("Stage non trouvé"));
 
         /*
         Vérifier si un code promo est appliqué
@@ -66,8 +68,10 @@ public class InscriptionServiceImpl implements InscriptionService {
         Inscription inscription = new Inscription();
         inscription.setUser(user);
         inscription.setStage(stage);
-        inscription.setStageType(stage.getStageType());
+        inscription.setStageType(request.stageType());
         inscription.setDateOfInscription(request.dateOfInscription());
+        inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
+
         //inscription.setCodePromo(codePromo);
 
         // Sauvegarder l'inscription
@@ -79,9 +83,11 @@ public class InscriptionServiceImpl implements InscriptionService {
                 inscription.getId(),
                 inscription.getUser().getId(),
                 inscription.getStage().getId(),
-                inscription.getStage().getStageType(),
-                inscription.getDateOfInscription()
-               // inscription.getCodePromo()
+                inscription.getStageType(),
+                inscription.getDateOfInscription(),
+                inscription.getInscriptionStatut()
+
+        // inscription.getCodePromo()
         );
     }
     @Override

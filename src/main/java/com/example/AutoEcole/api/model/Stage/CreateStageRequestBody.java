@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public record CreateStageRequestBody(
-   StageType stageType,
 
    LocalDate dateDeStage,
 

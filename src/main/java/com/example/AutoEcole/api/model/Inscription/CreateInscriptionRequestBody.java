@@ -12,7 +12,8 @@ public record CreateInscriptionRequestBody(
         Long userId,
         Long stageId,
         StageType stageType,
-        LocalDate dateOfInscription
+        LocalDate dateOfInscription,
+        InscriptionStatut inscriptionStatut
         //CodePromo codePromo
 ) {}
 

@@ -4,6 +4,7 @@ import com.example.AutoEcole.api.model.Stage.CreateStageRequestBody;
 import com.example.AutoEcole.api.model.Stage.CreateStageResponseBody;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.dal.domain.entity.Stage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ public class StageController {
 
     @PostMapping("/create")
     //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CreateStageResponseBody> createBooking(@RequestBody CreateStageRequestBody request){
+    public ResponseEntity<CreateStageResponseBody> createBooking(@RequestBody @Valid CreateStageRequestBody request){
         return ResponseEntity.ok(stageService.createStage(request));
     }
 

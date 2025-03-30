@@ -51,11 +51,18 @@ public class User extends BaseEntity<Long> implements UserDetails {
     public User() {
 
     }
-
+/*
     @Override
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.getName()));
+    }
+
+ */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Ajouter le préfixe ROLE_ à votre rôle, car Spring Security s'attend à ce format
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getName()));
     }
 
     /**
