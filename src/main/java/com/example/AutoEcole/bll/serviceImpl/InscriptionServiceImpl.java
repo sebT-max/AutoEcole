@@ -1,16 +1,15 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
+import com.example.AutoEcole.Exception.AccessDeniedException.AccessDeniedException;
 import com.example.AutoEcole.Exception.StageNotFoundException.StageNotFoundException;
 import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.bll.service.InscriptionService;
-import com.example.AutoEcole.dal.domain.entity.CodePromo;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
-import com.example.AutoEcole.dal.domain.enum_.StageType;
 import com.example.AutoEcole.dal.repository.CodePromoRepository;
 import com.example.AutoEcole.dal.repository.InscriptionRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
@@ -18,10 +17,7 @@ import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -98,31 +94,35 @@ public class InscriptionServiceImpl implements InscriptionService {
         }
         return inscriptions;
     }
-}
-/*
+
+
     @Override
     public List<Inscription> getAllInscriptions() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         // Récupération de l'utilisateur authentifié
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        if (user == null) {
+            throw new UserNotFoundException("User not authenticated");
+        }
+
 
         // Recherche de l'utilisateur en base
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        //User user = userRepository.findByEmail(email)
+          //     .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
         // Vérification si il s'agit d'un opérateur
-        boolean isAdmin = user.getRole().getName().equals("ADMIN") || user.getRole().getName().equals("CLIENT");
+        boolean isAdmin = user.getRole().getName().equals("ADMIN");
 
-        //if (!isAdmin) {
-          //  throw new AccessDeniedException("Accès refusé : vous n'avez pas les permissions nécessaires.");
-        //}
+        if (!isAdmin) {
+            throw new AccessDeniedException("Accès refusé : vous n'avez pas les permissions nécessaires.");
+        }
 
-        // Si l'utilisateur est ADMIN ou TECHNICIEN, il peut voir tous les tickets
         return inscriptionRepository.findAll();
     }
+}
 
 
-
+/*
 
     @Override
     public Inscription getBookingById(Long id){

@@ -42,12 +42,13 @@ public class InscriptionController {
         return ResponseEntity.ok(inscriptions);
     }
 
-    /*
+
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public List<Inscription> getAllInscriptions(){
         return inscriptionService.getAllInscriptions();
     }
+     /*
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

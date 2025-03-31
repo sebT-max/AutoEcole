@@ -11,9 +11,9 @@ public interface InscriptionService {
 
     CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request);
     List<Inscription> getInscriptionsByUserId(Long userId);
-    /*
-    List<Inscription> getAllInscriptions();
 
+    List<Inscription> getAllInscriptions();
+ /*
 
 
     Inscription getBookingById(Long id);
