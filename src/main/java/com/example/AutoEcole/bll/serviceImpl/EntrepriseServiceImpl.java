@@ -21,9 +21,9 @@ public class EntrepriseServiceImpl implements EntrepriseService {
 
     @Override
     public Entreprise login(String email, String password) {
-        Entreprise entreprise = entrepriseRepository.findByEmail(email)
-                .orElseThrow(() -> new EntrepriseNotFoundException("Aucune entreprise avec cette adresse email: " + email));
-
+        Entreprise entreprise = entrepriseRepository.findByIdWithRole(2L)
+                .orElseThrow(() -> new EntrepriseNotFoundException("Entreprise non trouvée"));
+        System.out.println("Role name: " + entreprise.getRole().getName());
         if(!passwordEncoder.matches(password, entreprise.getPassword())){
             throw new BadCredentialsException("Mot de passe incorrect");
         }

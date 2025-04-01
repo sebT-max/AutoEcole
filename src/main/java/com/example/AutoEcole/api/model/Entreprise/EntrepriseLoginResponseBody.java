@@ -12,15 +12,19 @@ public class EntrepriseLoginResponseBody {
     private String token;
     private Role role;
 
-    public EntrepriseLoginResponseBody(Long id, String name,
-                                       String email) {
+    public EntrepriseLoginResponseBody(Long id, String name, String email, Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.role = role;
     }
 
     public static EntrepriseLoginResponseBody fromEntity(Entreprise entreprise) {
-        return new EntrepriseLoginResponseBody(entreprise.getId(), entreprise.getName(),
-                entreprise.getEmail());
+        return new EntrepriseLoginResponseBody(
+                entreprise.getId(),
+                entreprise.getName(),
+                entreprise.getEmail(),
+                entreprise.getRole()
+        );
     }
 }

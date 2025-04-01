@@ -32,7 +32,7 @@ public class InscriptionController {
 
     private final FileService fileService;
 
-    @PostMapping("/create")
+    @PostMapping(value="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CreateInscriptionResponseBody> createInscription(
             @RequestPart("request") CreateInscriptionRequestBody request,
             @RequestParam(value = "file", required = false) MultipartFile file)  {

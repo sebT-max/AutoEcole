@@ -19,13 +19,13 @@ public class StageController {
     private final StageService stageService;
 
     @PostMapping("/create")
-    //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CreateStageResponseBody> createBooking(@RequestBody @Valid CreateStageRequestBody request){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CreateStageResponseBody> createStage(@RequestBody @Valid CreateStageRequestBody request){
         return ResponseEntity.ok(stageService.createStage(request));
     }
 
     @GetMapping("/all")
-    public List<Stage> getAllJourneys(){
+    public List<Stage> getAllStages(){
         return stageService.getAllStages();
     }
 

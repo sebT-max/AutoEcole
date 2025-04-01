@@ -49,6 +49,7 @@ public class JwtUtil {
             builder.setSubject(entreprise.getName()) // Utilisation du nom de l'entreprise comme subject
                     .claim("id", entreprise.getId())
                     .claim("email", entreprise.getEmail())
+                    .claim("role", entreprise.getRole().getName())
                     .claim("telephone", entreprise.getTelephone())
                     .claim("userType", "company"); // Ajout du type entreprise
         } else {

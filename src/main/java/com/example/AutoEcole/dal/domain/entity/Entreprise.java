@@ -1,10 +1,8 @@
 package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -40,7 +38,8 @@ public class Entreprise extends BaseEntity<Long> {
     @Column(nullable = false)
     private boolean acceptTerms;
 
-    @ManyToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 
