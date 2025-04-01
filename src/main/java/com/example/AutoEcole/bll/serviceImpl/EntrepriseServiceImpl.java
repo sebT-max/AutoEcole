@@ -1,5 +1,4 @@
 package com.example.AutoEcole.bll.serviceImpl;
-
 import com.example.AutoEcole.Exception.EntrepriseNotFound.EntrepriseNotFoundException;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterRequestBody;
 import com.example.AutoEcole.bll.service.EntrepriseService;

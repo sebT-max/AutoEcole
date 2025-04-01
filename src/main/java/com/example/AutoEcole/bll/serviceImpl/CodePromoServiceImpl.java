@@ -3,16 +3,10 @@ package com.example.AutoEcole.bll.serviceImpl;
 import com.example.AutoEcole.api.model.CodePromo.CreateCodePromoRequestBody;
 import com.example.AutoEcole.api.model.CodePromo.CreateCodePromoResponseBody;
 import com.example.AutoEcole.bll.service.CodePromoService;
-import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.CodePromo;
-import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.repository.CodePromoRepository;
-import com.example.AutoEcole.dal.repository.StageRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 public class CodePromoServiceImpl implements CodePromoService {
 

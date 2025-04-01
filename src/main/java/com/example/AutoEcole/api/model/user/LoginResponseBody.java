@@ -1,5 +1,4 @@
 package com.example.AutoEcole.api.model.user;
-
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
 import lombok.Data;

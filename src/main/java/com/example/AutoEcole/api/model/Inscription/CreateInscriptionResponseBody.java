@@ -12,8 +12,9 @@ public record CreateInscriptionResponseBody(
         Long userId,
         Long stageId,
         StageType stageType,
-        LocalDate dateOfInscription,
-        InscriptionStatut inscriptionStatut
+        InscriptionStatut inscriptionStatut,
+        String lettrePdf  // Nom du fichier de la lettre
+
         //CodePromo codePromo
 
 ) {}

@@ -29,7 +29,7 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final CodePromoRepository codePromoRepository;
 
     @Override
-    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request) {
+    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, String fileName) {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -65,8 +65,8 @@ public class InscriptionServiceImpl implements InscriptionService {
         inscription.setUser(user);
         inscription.setStage(stage);
         inscription.setStageType(request.stageType());
-        inscription.setDateOfInscription(request.dateOfInscription());
         inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
+        inscription.setLettrePdf(request.lettrePdf());
 
         //inscription.setCodePromo(codePromo);
 
@@ -80,8 +80,8 @@ public class InscriptionServiceImpl implements InscriptionService {
                 inscription.getUser().getId(),
                 inscription.getStage().getId(),
                 inscription.getStageType(),
-                inscription.getDateOfInscription(),
-                inscription.getInscriptionStatut()
+                inscription.getInscriptionStatut(),
+                inscription.getLettrePdf()
 
         // inscription.getCodePromo()
         );
@@ -119,18 +119,20 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         return inscriptionRepository.findAll();
     }
-}
 
 
-/*
+
+
 
     @Override
-    public Inscription getBookingById(Long id){
+    public Inscription getInscriptionById(Long id){
         Inscription inscriptionById = inscriptionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réservation non trouvé"));
 
         return inscriptionById;
     }
+}
+    /*
 
     @Transactional
     @Override
