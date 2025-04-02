@@ -16,10 +16,7 @@ public record CreateInscriptionRequestBody(
         Long stageId,
         @Nullable
         StageType stageType,
-        InscriptionStatut inscriptionStatut,
-//        String lettrePdf,
-        //CodePromo codePromo
-        MultipartFile file
+        InscriptionStatut inscriptionStatut
 ) {}
 
 

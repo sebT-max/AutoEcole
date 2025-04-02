@@ -36,8 +36,9 @@ public class ParticulierServiceImpl implements ParticulierService {
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Créer l’entité utilisateur
-        User newUser = requestBody.toEntity(role);
+        User newUser = requestBody.toEntity();
 
+        newUser.setRole(role);
         // Hasher le mot de passe (si tu utilises Spring Security)
         newUser.setPassword(passwordEncoder.encode(requestBody.password()));
 

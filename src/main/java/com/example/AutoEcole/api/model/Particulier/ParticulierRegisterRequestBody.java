@@ -39,7 +39,15 @@ public record ParticulierRegisterRequestBody(
         Long roleId
 
 ) {
-    public Particulier toEntity(Role role) {
-        return new Particulier();
+    public Particulier toEntity() {
+        Particulier particulier = new Particulier();
+        particulier.setLastname(lastname);
+        particulier.setFirstname(firstname);
+        particulier.setEmail(email);
+        particulier.setPassword(password);
+        particulier.setTelephone(telephone);
+        particulier.setBirthdate(birthdate);
+        particulier.setAcceptTerms(acceptTerms);
+        return particulier;
     }
 }

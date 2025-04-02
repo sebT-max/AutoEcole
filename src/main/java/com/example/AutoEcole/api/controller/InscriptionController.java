@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,8 +30,75 @@ public class InscriptionController {
     private final InscriptionService inscriptionService;
     private final UserService userService;
     private final StageService stageService;
-
     private final FileService fileService;
+      /*
+    @PostMapping(value="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> createInscription(
+            @RequestPart("request") CreateInscriptionRequestBody request,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+
+        try {
+            // Vérifier que le fichier est bien un PDF
+            if (file != null && !file.isEmpty() &&
+                    !"application/pdf".equals(file.getContentType())) {
+                return ResponseEntity.badRequest().body("Le fichier doit être au format PDF");
+            }
+
+            // Sauvegarde de la lettre (retourne null si aucun fichier fourni)
+            String fileName = (file != null) ? fileService.saveFile(file) : null;
+
+            // Création de l'inscription
+            // CreateInscriptionResponseBody inscription = inscriptionService.createInscription(request, fileName);
+
+            return ResponseEntity.ok("Inscription créée avec succès !");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors du téléchargement du fichier");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de l'inscription");
+        }
+    }
+
+*/
+//      @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//      public ResponseEntity<CreateInscriptionResponseBody> createInscription(
+//              @RequestPart("request") CreateInscriptionRequestBody request,
+//              @RequestPart(value = "file", required = false) MultipartFile file) {
+//          try {
+//              System.out.println("Données reçues : " + request);
+//
+//              // Vérification du fichier
+//              if (file != null && !file.isEmpty() &&
+//                      !"application/pdf".equals(file.getContentType())) {
+//                  return ResponseEntity.badRequest().body(new CreateInscriptionResponseBody(
+//                          "Le fichier doit être au format PDF",
+//                          null, null, null, null, null, null
+//                  ));
+//              }
+//
+//              // Sauvegarde du fichier et récupération du nom
+//              String fileName = (file != null) ? fileService.saveFile(file) : null;
+//
+//              // 🔥 Appel du service avec le bon paramètre `fileName`
+//              CreateInscriptionResponseBody response = inscriptionService.createInscription(request, fileName);
+//
+//              return ResponseEntity.ok(response);
+//
+//          } catch (IOException e) {
+//              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                      .body(new CreateInscriptionResponseBody(
+//                              "Erreur lors du téléchargement du fichier",
+//                              null, null, null, null, null, null
+//                      ));
+//          } catch (Exception e) {
+//              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                      .body(new CreateInscriptionResponseBody(
+//                              "Erreur lors de l'inscription",
+//                              null, null, null, null, null, null
+//                      ));
+//          }
+//      }
 
     @PostMapping(value="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createInscription(
@@ -68,6 +136,8 @@ public class InscriptionController {
             return ResponseEntity.ok("BIBLOP");
         }
     }
+
+
 
     @GetMapping("/file/{fileName}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) {
