@@ -1,6 +1,5 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
-import com.example.AutoEcole.api.model.user.RegisterRequestBody;
 import com.example.AutoEcole.Exception.ressourceNotFound.RessourceNotFoundException;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Role;
@@ -39,36 +38,6 @@ public class UserServiceImpl implements UserService {
             throw new BadCredentialsException("Mot de passe incorrect");
         }
         return user;
-    }
-    @Override
-    public Long register(RegisterRequestBody requestBody) {
-        // Vérifier que l'utilisateur accepte les conditions d'utilisation
-
-
-        if (!requestBody.acceptTerms()) {
-            throw new IllegalArgumentException("You must accept the terms and conditions to register.");
-        }
-        // Vérifier si l'email est déjà utilisé
-        if (userRepository.findByEmail(requestBody.email()).isPresent()) {
-            throw new IllegalArgumentException("Email already in use.");
-        }
-
-        // Récupérer le rôle depuis la base
-
-        Role role = roleRepository.findById(requestBody.roleId())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-
-        // Créer l’entité utilisateur
-        User newUser = requestBody.toEntity(role);
-
-        // Hasher le mot de passe (si tu utilises Spring Security)
-        newUser.setPassword(passwordEncoder.encode(requestBody.password()));
-
-        // Sauvegarder l'utilisateur
-        User savedUser = userRepository.save(newUser);
-
-        // Retourner l'ID de l'utilisateur créé
-        return savedUser.getId();
     }
 
 

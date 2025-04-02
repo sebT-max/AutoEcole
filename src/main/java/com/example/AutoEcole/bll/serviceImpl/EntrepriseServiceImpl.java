@@ -49,7 +49,7 @@ public class EntrepriseServiceImpl implements EntrepriseService {
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
         // Créer l’entité utilisateur
-        Entreprise newEntreprise = requestBody.toEntity(role);
+        Entreprise newEntreprise = requestBody.toEntity();
 
         // Hasher le mot de passe (si tu utilises Spring Security)
         newEntreprise.setPassword(passwordEncoder.encode(requestBody.password()));

@@ -11,16 +11,12 @@ import java.util.stream.Collectors;
 @Data
 public class UserResponseBody {
     private Long id;
-    private String lastname;
-    private String firstname;
     private String email;
     private Role role;
 
-    public UserResponseBody(Long id, String lastname, String firstname,
+    public UserResponseBody(Long id,
                             String email, Role role){
         this.id = id;
-        this.lastname = lastname;
-        this.firstname = firstname;
         this.email = email;
         this.role = role;
     }
@@ -28,8 +24,6 @@ public class UserResponseBody {
     public static UserResponseBody fromEntity(User user){
         return new UserResponseBody(
                 user.getId(),
-                user.getLastname(),
-                user.getFirstname(),
                 user.getEmail(),
                 user.getRole()
                 );

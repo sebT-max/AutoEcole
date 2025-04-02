@@ -41,18 +41,9 @@ public class JwtUtil {
             builder.setSubject(user.getUsername())
                     .claim("id", user.getId())
                     .claim("email", user.getEmail())
-                    .claim("lastname", user.getLastname())
-                    .claim("firstname", user.getFirstname())
-                    .claim("role", user.getRole().getName()) // Ajout du rôle pour les utilisateurs
-                    .claim("userType", "user"); // Ajout du type utilisateur
-        } else if (entity instanceof Entreprise entreprise) {
-            builder.setSubject(entreprise.getName()) // Utilisation du nom de l'entreprise comme subject
-                    .claim("id", entreprise.getId())
-                    .claim("email", entreprise.getEmail())
-                    .claim("role", entreprise.getRole().getName())
-                    .claim("telephone", entreprise.getTelephone())
-                    .claim("userType", "company"); // Ajout du type entreprise
-        } else {
+                    .claim("role", user.getRole().getName()); // Ajout du rôle pour les utilisateurs
+        }
+         else {
             throw new IllegalArgumentException("Type d'entité non supporté pour la génération du token");
         }
 

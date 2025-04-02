@@ -15,15 +15,9 @@ import java.util.Collections;
 @AllArgsConstructor
 @Getter @Setter
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class User extends BaseEntity<Long> implements UserDetails {
 
-public class User extends BaseEntity<Long> implements UserDetails {
-
-    @Column(name = "LASTNAME", nullable = false, length = 50)
-    private String lastname;
-
-
-    @Column(name = "FIRSTNAME", nullable = false, length = 50)
-    private String firstname;
 
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
@@ -39,8 +33,6 @@ public class User extends BaseEntity<Long> implements UserDetails {
     /**
      * The birthdate of the {@code user}.
      */
-    @Column(name ="birthdate",nullable = false)
-    private LocalDate birthdate;
 
     private boolean acceptTerms;
 

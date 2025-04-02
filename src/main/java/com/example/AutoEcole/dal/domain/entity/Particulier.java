@@ -1,7 +1,4 @@
 package com.example.AutoEcole.dal.domain.entity;
-
-import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
@@ -10,10 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -21,10 +15,17 @@ import java.util.List;
 @Getter
 @Setter
 
-public class Entreprise extends User {
+public class Particulier extends User {
 
-    @Column()
-    private String name;
+    @Column(name = "LASTNAME", nullable = false, length = 50)
+    private String lastname;
+
+    @Column(name = "FIRSTNAME", nullable = false, length = 50)
+    private String firstname;
+
+    @Column(name ="birthdate",nullable = false)
+    private LocalDate birthdate;
+
 
     //@Column(nullable = false)
     //private String email;
@@ -45,3 +46,4 @@ public class Entreprise extends User {
 
  */
 }
+

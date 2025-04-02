@@ -1,16 +1,18 @@
-package com.example.AutoEcole.api.model.user;
+package com.example.AutoEcole.api.model.Particulier;
+
+import com.example.AutoEcole.dal.domain.entity.Entreprise;
+import com.example.AutoEcole.dal.domain.entity.Particulier;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.AssertTrue;
 import org.springframework.lang.Contract;
+
 import java.time.LocalDate;
 
-
-public record RegisterRequestBody(
-
+public record ParticulierRegisterRequestBody(
         @NotBlank(message = "lastname can not be empty")
         String lastname,
 
@@ -37,10 +39,7 @@ public record RegisterRequestBody(
         Long roleId
 
 ) {
-@Contract
-@NotNull
-        public User toEntity(Role role) {
-                return new User(lastname, firstname, email, password,telephone,LocalDate.from(birthdate),acceptTerms,role);
-                }
-        }
-
+    public Particulier toEntity(Role role) {
+        return new Particulier();
+    }
+}

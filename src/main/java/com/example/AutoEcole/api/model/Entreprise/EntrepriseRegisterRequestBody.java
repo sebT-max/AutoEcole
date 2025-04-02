@@ -17,8 +17,8 @@ public record EntrepriseRegisterRequestBody(
 ) {
     @Contract
     @NotNull
-    public Entreprise toEntity(Role role) {
-        return new Entreprise(name, email, password, telephone, acceptTerms, role);
+    public Entreprise toEntity() {
+        return new Entreprise();
     }
 }
 

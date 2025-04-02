@@ -1,5 +1,6 @@
 package com.example.AutoEcole.il.util;
 import com.example.AutoEcole.dal.domain.entity.Entreprise;
+import com.example.AutoEcole.dal.domain.entity.Particulier;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.dal.domain.enum_.Gender;
@@ -41,7 +42,7 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.save(roleCompany);
             //test
 
-            User client01 = new User();
+            Particulier client01 = new Particulier();
             client01.setLastname("De Brive Gaillarde");
             client01.setFirstname("Jean-Charles Edouard");
             client01.setEmail("jce.dbg@aristo.org");
@@ -52,7 +53,7 @@ public class DataInitializer implements CommandLineRunner {
             client01.setRole(roleParticulier);
             userRepository.save(client01);
 
-            User admin01 = new User();
+            Particulier admin01 = new Particulier();
             admin01.setLastname("Vassiliniei");
             admin01.setFirstname("Petrov");
             admin01.setEmail("vass.pet@operator.org");
@@ -64,8 +65,8 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(admin01);
 
             Entreprise companyClient1 = new Entreprise();
-            companyClient1.setName("MacDonalds");
-            companyClient1.setEmail("hilde.dupont@snob.org");
+            companyClient1.setName("Nasa");
+            companyClient1.setEmail("flavian.ovyn@nasa.org");
             companyClient1.setPassword(passwordEncoder.encode("Test1234="));
             companyClient1.setTelephone("0455/22.22.22");
             companyClient1.setRole(roleCompany);

@@ -6,24 +6,19 @@ import lombok.Data;
 @Data
 public class LoginResponseBody {
     private Long id;
-    private String lastname;
-    private String firstname;
     private String email;
     private String token;
     private Role role;
 
-    public LoginResponseBody(Long id, String lastname, String firstname,
+    public LoginResponseBody(Long id,
                              String email, Role role){
         this.id = id;
-        this.lastname = lastname;
-        this.firstname = firstname;
         this.email = email;
         this.role = role;
     }
 
     public static LoginResponseBody fromEntity(User user){
-        return new LoginResponseBody(user.getId(), user.getLastname(),
-                user.getFirstname(), user.getEmail(), user.getRole());
+        return new LoginResponseBody(user.getId(), user.getEmail(), user.getRole());
     }
 
 }

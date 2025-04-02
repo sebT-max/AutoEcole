@@ -32,12 +32,6 @@ public class UserController {
         return ResponseEntity.ok(loginResponseBody);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody @Valid RegisterRequestBody request){
-        Long id = userService.register(request);
-        return ResponseEntity.ok(id);
-    }
-
     @GetMapping("/me")
     @PreAuthorize("hasRole('PARTICULIER') or hasRole('ENTREPRISE')")
     public ResponseEntity<UserResponseBody> me(){
@@ -45,8 +39,6 @@ public class UserController {
         return ResponseEntity.ok(
                 new UserResponseBody(
                         user.getId(),
-                        user.getLastname(),
-                        user.getFirstname(),
                         user.getEmail(),
                         user.getRole()
                 )
