@@ -5,11 +5,11 @@ import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
 import com.example.AutoEcole.dal.domain.enum_.StageType;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
 public record CreateInscriptionRequestBody(
-        Long id,
         @Nullable
         Long userId,
         @Nullable
@@ -17,8 +17,9 @@ public record CreateInscriptionRequestBody(
         @Nullable
         StageType stageType,
         InscriptionStatut inscriptionStatut,
-        String lettrePdf
+//        String lettrePdf,
         //CodePromo codePromo
+        MultipartFile file
 ) {}
 
 

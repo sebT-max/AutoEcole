@@ -3,6 +3,7 @@ package com.example.AutoEcole.api.controller;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginRequestBody;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginResponseBody;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterRequestBody;
+import com.example.AutoEcole.api.model.Particulier.ParticulierLoginRequestBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierLoginResponseBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierRegisterRequestBody;
 import com.example.AutoEcole.bll.service.EntrepriseService;
@@ -35,7 +36,7 @@ public class ParticulierController {
         return ResponseEntity.ok(id);
     }
     @PostMapping("/login")
-    public ResponseEntity<ParticulierLoginResponseBody> login(@RequestBody @Valid EntrepriseLoginRequestBody request) {
+    public ResponseEntity<ParticulierLoginResponseBody> login(@RequestBody @Valid ParticulierLoginRequestBody request) {
         Particulier particulier = (Particulier)userService.login(request.email(), request.password());
 
         ParticulierLoginResponseBody particulierLoginResponseBody = ParticulierLoginResponseBody.fromEntity(particulier);

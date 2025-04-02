@@ -32,6 +32,7 @@ public class UserController {
         return ResponseEntity.ok(loginResponseBody);
     }
 
+
     @GetMapping("/me")
     @PreAuthorize("hasRole('PARTICULIER') or hasRole('ENTREPRISE')")
     public ResponseEntity<UserResponseBody> me(){

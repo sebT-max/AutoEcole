@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/V1/inscriptions")
+@RequestMapping("/api/V1/inscriptions")
 public class InscriptionController {
     private final InscriptionService inscriptionService;
     private final UserService userService;
@@ -33,34 +33,39 @@ public class InscriptionController {
     private final FileService fileService;
 
     @PostMapping(value="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CreateInscriptionResponseBody> createInscription(
-            @RequestPart("request") CreateInscriptionRequestBody request,
-            @RequestParam(value = "file", required = false) MultipartFile file)  {
-
+    public ResponseEntity<String> createInscription(
+            @ModelAttribute CreateInscriptionRequestBody requestBody
+//            @RequestPart("request") CreateInscriptionRequestBody request,
+//            MultipartFile file)  {
+    ){
+        MultipartFile file = requestBody.file();
         try {
             // Vérifier que le fichier est bien un PDF
             if (file != null && !file.isEmpty() &&
                     !file.getContentType().equals("application/pdf")) {
-                return ResponseEntity.badRequest()
-                        .body(new CreateInscriptionResponseBody(
-                                "Le fichier doit être au format PDF", null, null, null, null, null, null));
+                return ResponseEntity.ok("TriBLop");
+//                return ResponseEntity.badRequest()
+//                        .body(new CreateInscriptionResponseBody(
+//                                "Le fichier doit être au format PDF", null, null, null, null, null, null));
             }
 
             // Sauvegarde de la lettre (retourne null si aucun fichier fourni)
             String fileName = fileService.saveFile(file);
 
             // Création de l'inscription
-            CreateInscriptionResponseBody inscription = inscriptionService.createInscription(request, fileName);
+//            CreateInscriptionResponseBody inscription = inscriptionService.createInscription(request, fileName);
 
-            return ResponseEntity.ok(inscription);
+            return ResponseEntity.ok("BLOP");
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CreateInscriptionResponseBody(
-                            "Erreur lors du téléchargement de la lettre", null, null, null, null, null, null));
+            return ResponseEntity.ok("BIBLOP");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new CreateInscriptionResponseBody(
+//                            "Erreur lors du téléchargement de la lettre", null, null, null, null, null, null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CreateInscriptionResponseBody(
-                            "Erreur lors de l'inscription", null, null, null, null, null, null));
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new CreateInscriptionResponseBody(
+//                            "Erreur lors de l'inscription", null, null, null, null, null, null));
+            return ResponseEntity.ok("BIBLOP");
         }
     }
 

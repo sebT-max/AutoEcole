@@ -66,7 +66,7 @@ public class InscriptionServiceImpl implements InscriptionService {
         inscription.setStage(stage);
         inscription.setStageType(request.stageType());
         inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
-        inscription.setLettrePdf(request.lettrePdf());
+//        inscription.setLettrePdf(request.lettrePdf());
 
         //inscription.setCodePromo(codePromo);
 
