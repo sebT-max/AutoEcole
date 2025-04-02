@@ -19,16 +19,16 @@ public class EntrepriseServiceImpl implements EntrepriseService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public Entreprise login(String email, String password) {
-        Entreprise entreprise = entrepriseRepository.findByIdWithRole(2L)
-                .orElseThrow(() -> new EntrepriseNotFoundException("Entreprise non trouvée"));
-        System.out.println("Role name: " + entreprise.getRole().getName());
-        if(!passwordEncoder.matches(password, entreprise.getPassword())){
-            throw new BadCredentialsException("Mot de passe incorrect");
-        }
-        return entreprise;
-    }
+//    @Override
+//    public Entreprise login(String email, String password) {
+//        Entreprise entreprise = entrepriseRepository.findByIdWithRole(2L)
+//                .orElseThrow(() -> new EntrepriseNotFoundException("Entreprise non trouvée"));
+//        System.out.println("Role name: " + entreprise.getRole().getName());
+//        if(!passwordEncoder.matches(password, entreprise.getPassword())){
+//            throw new BadCredentialsException("Mot de passe incorrect");
+//        }
+//        return entreprise;
+//    }
 
     @Override
     public Long register(@Valid EntrepriseRegisterRequestBody requestBody) {
@@ -50,6 +50,8 @@ public class EntrepriseServiceImpl implements EntrepriseService {
 
         // Créer l’entité utilisateur
         Entreprise newEntreprise = requestBody.toEntity();
+
+        newEntreprise.setRole(role);
 
         // Hasher le mot de passe (si tu utilises Spring Security)
         newEntreprise.setPassword(passwordEncoder.encode(requestBody.password()));

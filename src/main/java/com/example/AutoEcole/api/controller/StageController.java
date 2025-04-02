@@ -39,4 +39,10 @@ public class StageController {
     public boolean deleteStage(@PathVariable Long id){
         return stageService.delete(id);
     }
+
+    // ✅ Ajout du filtre de recherche
+    @GetMapping("/search")
+    public List<Stage> searchStages(@RequestParam String searchTerm) {
+        return stageService.searchStages(searchTerm);
+    }
 }

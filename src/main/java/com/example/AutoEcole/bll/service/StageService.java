@@ -13,6 +13,10 @@ public interface StageService {
     public Stage getStageById(Long id);
     boolean update(Long id, Stage stage);
     boolean delete(Long id);
+
+    //List<Stage> searchStages(String entreprise, String localisation, Integer duree, String dateDebut);
+
+    List<Stage> searchStages(String searchTerm);
    /*
     List<Stage> searchStages(String entreprise, String localisation, Integer duree, LocalDate dateDebut);
 */

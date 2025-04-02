@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface EntrepriseService {
-    Entreprise login(String email, String password);
+    //Entreprise login(String email, String password);
 
     Long register(@Valid EntrepriseRegisterRequestBody requestBody);
 }

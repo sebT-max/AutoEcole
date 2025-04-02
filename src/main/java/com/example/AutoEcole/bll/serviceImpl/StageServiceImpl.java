@@ -88,6 +88,19 @@ public class StageServiceImpl implements StageService {
         }
         return false;  // Booking not found
     }
+
+//    @Override
+//    public List<Stage> searchStages(String entreprise, String localisation, Integer duree, String dateDebut) {
+//        return stageRepository.searchByFilters(entreprise, localisation, duree, dateDebut);
+//    }
+
+    @Override
+    public List<Stage> searchStages(String searchTerm) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+            return getAllStages(); // Si le terme de recherche est vide, retourner tous les stages
+        }
+        return stageRepository.searchByFilters(searchTerm);
+    }
     /*
     @Override
     public List<Stage> searchStages(String entreprise, String localisation, Integer duree, LocalDate dateDebut) {
