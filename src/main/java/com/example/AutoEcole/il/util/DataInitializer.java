@@ -43,10 +43,10 @@ public class DataInitializer implements CommandLineRunner {
             //test
 
             Particulier client01 = new Particulier();
-            client01.setLastname("De Brive Gaillarde");
-            client01.setFirstname("Jean-Charles Edouard");
-            client01.setEmail("jce.dbg@aristo.org");
-            client01.setPassword(passwordEncoder.encode("Chichis1234="));
+            client01.setLastname("Depardieu");
+            client01.setFirstname("Gérard");
+            client01.setEmail("gégédepardieu@zozo.com");
+            client01.setPassword(passwordEncoder.encode("123pignon"));
             client01.setTelephone("0455/22.22.22");
             client01.setBirthdate(LocalDate.of(1985, 5, 20)); // Ex: 20 mai 1985
             client01.setAcceptTerms(true);
@@ -54,10 +54,10 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(client01);
 
             Particulier admin01 = new Particulier();
-            admin01.setLastname("Vassiliniei");
-            admin01.setFirstname("Petrov");
-            admin01.setEmail("vass.pet@operator.org");
-            admin01.setPassword(passwordEncoder.encode("Cccp1917"));
+            admin01.setLastname("Palmade");
+            admin01.setFirstname("Pierre");
+            admin01.setEmail("pierrotlapalme@sevrage.org");
+            admin01.setPassword(passwordEncoder.encode("ensevrage"));
             admin01.setTelephone("0455/22.22.22");
             admin01.setBirthdate(LocalDate.of(1986, 5, 2)); // Ex: 20 mai 1985
             admin01.setAcceptTerms(true);
@@ -65,9 +65,9 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(admin01);
 
             Entreprise companyClient1 = new Entreprise();
-            companyClient1.setName("Nasa");
-            companyClient1.setEmail("flavian.ovyn@nasa.org");
-            companyClient1.setPassword(passwordEncoder.encode("Test1234="));
+            companyClient1.setName("Jupiler");
+            companyClient1.setEmail("contact@jupiler.be");
+            companyClient1.setPassword(passwordEncoder.encode("123123123"));
             companyClient1.setTelephone("0455/22.22.22");
             companyClient1.setRole(roleCompany);
             companyClient1.setAcceptTerms(true);
