@@ -207,6 +207,17 @@ public class InscriptionServiceImpl implements InscriptionService {
         }
         return false;  // Booking not found
     }
+    @Override
+    public Inscription validateInscriptionById(Long id) {
+        Inscription inscription = inscriptionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inscription non trouvée"));
+
+        // Met à jour le statut
+        inscription.setInscriptionStatut(InscriptionStatut.CONFIRME); // ou autre enum selon ton projet
+
+        // Sauvegarde en BDD
+        return inscriptionRepository.save(inscription);
+    }
 }
     /*
 

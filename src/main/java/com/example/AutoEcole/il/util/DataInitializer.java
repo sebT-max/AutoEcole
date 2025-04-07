@@ -99,6 +99,7 @@ public class DataInitializer implements CommandLineRunner {
             stage2.setTwoDaysOfTheWeek(TwoDaysOfTheWeek.LUNDI_MARDI);
             stage2.setMonth(Month.JUNE);
             stageRepository.save(stage2);
+
         }
     }
 }

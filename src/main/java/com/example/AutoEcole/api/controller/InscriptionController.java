@@ -174,10 +174,16 @@ public class InscriptionController {
         return inscriptionService.getAllInscriptions();
     }
 
-    @DeleteMapping("/delete/{inscription.id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteBooking(@PathVariable Long id){
         return inscriptionService.delete(id);
+    }
+
+    @PatchMapping("/{id}/validate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Inscription validateInscriptionById(@PathVariable Long id){
+        return inscriptionService.validateInscriptionById(id);
     }
     /*
 
@@ -186,6 +192,8 @@ public class InscriptionController {
     public Inscription getInscriptionById(@PathVariable Long id){
         return inscriptionService.getBookingById(id);
     }
+
+     */
 
 
 

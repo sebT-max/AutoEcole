@@ -18,6 +18,8 @@ public interface InscriptionService {
 
     Inscription getInscriptionById(Long id);
     boolean delete(Long id);
+
+    Inscription validateInscriptionById(Long id);
     /*
     @Transactional
     boolean update(Long id, Inscription inscription);
