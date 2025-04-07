@@ -8,14 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 
 public record CreateInscriptionResponseBody(
-        String message,
-        Long id,
+       String message,
+       Long id,
         Long userId,
         Long stageId,
         StageType stageType,
-        InscriptionStatut inscriptionStatut,
-        String file
-
+        InscriptionStatut inscriptionStatut
         //CodePromo codePromo
 
 ) {}

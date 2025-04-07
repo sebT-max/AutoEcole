@@ -7,10 +7,9 @@ import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,10 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +28,49 @@ public class InscriptionController {
     private final UserService userService;
     private final StageService stageService;
     private final FileService fileService;
+
+    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CreateInscriptionResponseBody> create2(@Valid CreateInscriptionRequestBody request,
+                                                                 @RequestParam("file") MultipartFile file) {
+
+        // Appel du service pour créer l'inscription
+        CreateInscriptionResponseBody response = inscriptionService.createInscription(request, file);
+
+        // Retourner la réponse avec l'objet response
+        return ResponseEntity.ok(response);
+    }
+
+//        try {
+//            // Vérifier que le fichier est bien un PDF
+//            if (file != null && !file.isEmpty() &&
+//                    !file.getContentType().equals("application/pdf")) {
+//                return ResponseEntity.ok("TriBLop");
+////                return ResponseEntity.badRequest()
+////                        .body(new CreateInscriptionResponseBody(
+////                                "Le fichier doit être au format PDF", null, null, null, null, null, null));
+//            }
+//
+//            // Sauvegarde de la lettre (retourne null si aucun fichier fourni)
+//            String fileName = fileService.saveFile(file);
+//
+//            // Création de l'inscription
+////            CreateInscriptionResponseBody inscription = inscriptionService.createInscription(request, fileName);
+//
+//            return ResponseEntity.ok("Ca fonctionne");
+//        } catch (IOException e) {
+//            return ResponseEntity.ok("BIBLOP");
+////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+////                    .body(new CreateInscriptionResponseBody(
+////                            "Erreur lors du téléchargement de la lettre", null, null, null, null, null, null));
+//        } catch (Exception e) {
+////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+////                    .body(new CreateInscriptionResponseBody(
+////                            "Erreur lors de l'inscription", null, null, null, null, null, null));
+//            return ResponseEntity.ok("BIBLOP");
+//        }
+
+
+
       /*
     @PostMapping(value="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createInscription(
@@ -100,43 +140,6 @@ public class InscriptionController {
 //          }
 //      }
 
-//    @PostMapping(value="/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<CreateInscriptionResponseBody> createInscription(
-//              @RequestPart("request") CreateInscriptionRequestBody request,
-//             @RequestPart(value = "file", required = false) MultipartFile file) {
-//    ){
-//
-//        try {
-//            // Vérifier que le fichier est bien un PDF
-//            if (file != null && !file.isEmpty() &&
-//                    !file.getContentType().equals("application/pdf")) {
-//                return ResponseEntity.ok("TriBLop");
-////                return ResponseEntity.badRequest()
-////                        .body(new CreateInscriptionResponseBody(
-////                                "Le fichier doit être au format PDF", null, null, null, null, null, null));
-//            }
-//
-//            // Sauvegarde de la lettre (retourne null si aucun fichier fourni)
-//            String fileName = fileService.saveFile(file);
-//
-//            // Création de l'inscription
-////            CreateInscriptionResponseBody inscription = inscriptionService.createInscription(request, fileName);
-//
-//            return ResponseEntity.ok("BLOP");
-//        } catch (IOException e) {
-//            return ResponseEntity.ok("BIBLOP");
-////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-////                    .body(new CreateInscriptionResponseBody(
-////                            "Erreur lors du téléchargement de la lettre", null, null, null, null, null, null));
-//        } catch (Exception e) {
-////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-////                    .body(new CreateInscriptionResponseBody(
-////                            "Erreur lors de l'inscription", null, null, null, null, null, null));
-//            return ResponseEntity.ok("BIBLOP");
-//        }
-//    }
-//
-//
 //
 //    @GetMapping("/file/{fileName}")
 //    public ResponseEntity<Resource> getFile(@PathVariable String fileName) {

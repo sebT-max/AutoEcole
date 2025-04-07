@@ -21,21 +21,18 @@ public class Inscription extends BaseEntity<Long> {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="stage_id")
+    @ManyToOne()
+    @JoinColumn(name="stage_id",nullable = false)
     private Stage stage;
 
-    @Column(name = "statut_inscription")
+    @Column(name = "statut_inscription", nullable = false)
     @Enumerated(EnumType.STRING)
     private InscriptionStatut inscriptionStatut;
-
-    @Column(nullable = false)
-    private LocalDate dateOfInscription;
 
     @Column
     private Integer nbrPerson;
 
-    @Column(name = "Type_de_stage")
+    @Column(name = "Type_de_stage", nullable = false)
     @Enumerated(EnumType.STRING)
     private StageType stageType;
 
@@ -44,6 +41,7 @@ public class Inscription extends BaseEntity<Long> {
     private CodePromo codePromo;
 
     @Column
-    private String lettrePdf;
+    private String lettrePdf;  // Sauvegarder le nom du fichier PDF (et non MultipartFile)
 
 }
+

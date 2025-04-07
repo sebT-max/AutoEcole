@@ -1,11 +1,11 @@
 package com.example.AutoEcole.il.util;
-import com.example.AutoEcole.dal.domain.entity.Entreprise;
-import com.example.AutoEcole.dal.domain.entity.Particulier;
-import com.example.AutoEcole.dal.domain.entity.Role;
-import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.domain.entity.*;
 import com.example.AutoEcole.dal.domain.enum_.Gender;
+import com.example.AutoEcole.dal.domain.enum_.Month;
+import com.example.AutoEcole.dal.domain.enum_.TwoDaysOfTheWeek;
 import com.example.AutoEcole.dal.repository.EntrepriseRepository;
 import com.example.AutoEcole.dal.repository.RoleRepository;
+import com.example.AutoEcole.dal.repository.StageRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +21,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final EntrepriseRepository entrepriseRepository;
+    private final StageRepository stageRepository;
 
 
     @Override
@@ -45,7 +46,7 @@ public class DataInitializer implements CommandLineRunner {
             Particulier client01 = new Particulier();
             client01.setLastname("Depardieu");
             client01.setFirstname("Gérard");
-            client01.setEmail("gégédepardieu@zozo.com");
+            client01.setEmail("gegedepardieu@zozo.com");
             client01.setPassword(passwordEncoder.encode("123pignon"));
             client01.setTelephone("0455/22.22.22");
             client01.setBirthdate(LocalDate.of(1985, 5, 20)); // Ex: 20 mai 1985
@@ -73,6 +74,31 @@ public class DataInitializer implements CommandLineRunner {
             companyClient1.setAcceptTerms(true);
             entrepriseRepository.save(companyClient1);
 
+
+            Stage stage1 = new Stage();
+            stage1.setDateDeStage(LocalDate.of(2025, 5, 2));
+            stage1.setCity("Paris");
+            stage1.setStreet("rue Doudeauville 14");
+            stage1.setArrondissement("16ième");
+            stage1.setCapacity(20);
+            stage1.setPrice(260.00);
+            stage1.setOrganisation("9h-12h || 13h-17h");
+            stage1.setTwoDaysOfTheWeek(TwoDaysOfTheWeek.LUNDI_MARDI);
+            stage1.setMonth(Month.JUNE);
+            stageRepository.save(stage1);
+
+
+            Stage stage2 = new Stage();
+            stage2.setDateDeStage(LocalDate.of(2025, 6, 2));
+            stage2.setCity("Bordeaux");
+            stage2.setStreet("rue Beaudelaire 12");
+            stage2.setArrondissement("16ième");
+            stage2.setCapacity(20);
+            stage2.setPrice(260.00);
+            stage2.setOrganisation("9h-12h || 13h-17h");
+            stage2.setTwoDaysOfTheWeek(TwoDaysOfTheWeek.LUNDI_MARDI);
+            stage2.setMonth(Month.JUNE);
+            stageRepository.save(stage2);
         }
     }
 }

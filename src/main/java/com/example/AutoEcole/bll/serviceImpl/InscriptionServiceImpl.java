@@ -5,6 +5,7 @@ import com.example.AutoEcole.Exception.StageNotFoundException.StageNotFoundExcep
 import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
+import com.example.AutoEcole.bll.service.FileService;
 import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
@@ -17,6 +18,9 @@ import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -27,6 +31,7 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final InscriptionRepository inscriptionRepository;
     private final StageRepository stageRepository;
     private final CodePromoRepository codePromoRepository;
+    private final FileService fileService;
 
 //    @Override
 //    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, String fileName) {
@@ -84,63 +89,71 @@ public class InscriptionServiceImpl implements InscriptionService {
 //    }
 
     @Override
-    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, String fileName) {
+    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, MultipartFile fileName) {
+        // Récupérer le principal de Spring Security (utilisateur authentifié)
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (user == null) {
+        // Vérifier si le principal est une instance de User ou de ses sous-classes concrètes
+        User user;
+        if (principal instanceof User) {
+            user = (User) principal;  // Cast en toute sécurité si c'est un User
+        } else {
             throw new UserNotFoundException("User not authenticated");
         }
 
         // Vérifier que le stage existe
+        assert request.stageId() != null;
         Stage stage = stageRepository.findById(request.stageId())
                 .orElseThrow(() -> new StageNotFoundException("Stage non trouvé"));
 
-        /*
-        Vérifier si un code promo est appliqué
-        CodePromo codePromo = null;
-        if (request.codePromo() != null) {
-            codePromo = codePromoRepository.findByCode(request.codePromo().getCode()); // Recherche par code promo
-        }
-
-
-
-        // Si un code promo est trouvé, vérifier sa validité (expiration)
-
-        if (codePromo != null && codePromo.getExpiry_date().isAfter(LocalDate.now())) {
-            // Appliquer la réduction (si nécessaire)
-        } else if (codePromo != null) {
-            throw new RuntimeException("Le code promo est expiré.");
-        }
-
-         */
-
         // Créer l'inscription
         Inscription inscription = new Inscription();
-        inscription.setUser(user);
-        inscription.setStage(stage);
+        inscription.setUser(user);  // Assigner l'utilisateur récupéré
+        inscription.setStage(stage);  // Assigner le stage
         inscription.setStageType(request.stageType());
         inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
-//        inscription.setLettrePdf(request.lettrePdf());
 
-        //inscription.setCodePromo(codePromo);
+        // Sauvegarder le fichier et son nom
+        if (fileName != null && !fileName.isEmpty()) {
+            try {
+                String fileStoredName = fileService.saveFile(fileName);  // Sauvegarde du fichier et récupération du nom
+                inscription.setLettrePdf(fileStoredName);  // Sauvegarder le nom du fichier
+            } catch (IOException e) {
+                throw new RuntimeException("Erreur lors du téléchargement du fichier PDF", e);
+            }
+        }
 
-        // Sauvegarder l'inscription
+        // Sauvegarder l'inscription dans la base de données
         inscriptionRepository.save(inscription);
 
-        // Retourner la réponse
+        // Retourner la réponse avec les informations de l'inscription
         return new CreateInscriptionResponseBody(
                 "Réservation effectuée avec succès !",
                 inscription.getId(),
                 inscription.getUser().getId(),
                 inscription.getStage().getId(),
                 inscription.getStageType(),
-                inscription.getInscriptionStatut(),
-                inscription.getLettrePdf()
-
-                // inscription.getCodePromo()
+                inscription.getInscriptionStatut()
         );
     }
+
+
+    /*
+       Vérifier si un code promo est appliqué
+       CodePromo codePromo = null;
+       if (request.codePromo() != null) {
+           codePromo = codePromoRepository.findByCode(request.codePromo().getCode()); // Recherche par code promo
+       }
+
+       // Si un code promo est trouvé, vérifier sa validité (expiration)
+
+       if (codePromo != null && codePromo.getExpiry_date().isAfter(LocalDate.now())) {
+           // Appliquer la réduction (si nécessaire)
+       } else if (codePromo != null) {
+           throw new RuntimeException("Le code promo est expiré.");
+       }
+
+        */
     @Override
     public List<Inscription> getInscriptionsByUserId(Long userId){
         List<Inscription> inscriptions = inscriptionRepository.findByUserIdWithDetails(userId);
@@ -150,6 +163,13 @@ public class InscriptionServiceImpl implements InscriptionService {
         return inscriptions;
     }
 
+    private byte[] getPictureBytes(MultipartFile pictureFile) {
+        try {
+            return pictureFile != null ? pictureFile.getBytes() : null;
+        } catch (IOException e) {
+            throw new RuntimeException("Error while processing picture file", e);
+        }
+    }
 
     @Override
     public List<Inscription> getAllInscriptions() {
@@ -160,12 +180,6 @@ public class InscriptionServiceImpl implements InscriptionService {
             throw new UserNotFoundException("User not authenticated");
         }
 
-
-        // Recherche de l'utilisateur en base
-        //User user = userRepository.findByEmail(email)
-          //     .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        // Vérification si il s'agit d'un opérateur
         boolean isAdmin = user.getRole().getName().equals("ADMIN");
 
         if (!isAdmin) {
@@ -174,10 +188,6 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         return inscriptionRepository.findAll();
     }
-
-
-
-
 
     @Override
     public Inscription getInscriptionById(Long id){
