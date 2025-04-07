@@ -173,7 +173,13 @@ public class InscriptionController {
     public List<Inscription> getAllInscriptions(){
         return inscriptionService.getAllInscriptions();
     }
-     /*
+
+    @DeleteMapping("/delete/{inscription.id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public boolean deleteBooking(@PathVariable Long id){
+        return inscriptionService.delete(id);
+    }
+    /*
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -182,11 +188,7 @@ public class InscriptionController {
     }
 
 
-    @DeleteMapping("delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public boolean deleteBooking(@PathVariable Long id){
-        return inscriptionService.delete(id);
-    }
+
 /*
     @PutMapping("/update/{id}")
     public ResponseEntity<Boolean> updateBooking(

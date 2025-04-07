@@ -17,11 +17,10 @@ public interface InscriptionService {
 
 
     Inscription getInscriptionById(Long id);
- /*
+    boolean delete(Long id);
+    /*
     @Transactional
     boolean update(Long id, Inscription inscription);
-
-    boolean delete(Long id);
 
  */
 }

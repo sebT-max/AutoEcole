@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -196,6 +197,16 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         return inscriptionById;
     }
+
+    @Override
+    public boolean delete(Long id) {
+        Optional<Inscription> booking = inscriptionRepository.findById(id);
+        if (booking.isPresent()) {
+            inscriptionRepository.deleteById(id);
+            return true;
+        }
+        return false;  // Booking not found
+    }
 }
     /*
 
@@ -218,16 +229,6 @@ public class InscriptionServiceImpl implements InscriptionService {
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors de la mise à jour de la réservation", e);
         }
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        Optional<Inscription> booking = inscriptionRepository.findById(id);
-        if (booking.isPresent()) {
-            inscriptionRepository.deleteById(id);
-            return true;
-        }
-        return false;  // Booking not found
     }
 
 //    public Optional<Booking> getBookingWithDetails(Long id) {
