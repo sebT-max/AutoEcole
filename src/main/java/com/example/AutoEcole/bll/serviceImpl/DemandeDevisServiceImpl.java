@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DemandeDevisServiceImpl implements DemandeDevisService {
@@ -42,12 +44,21 @@ public class DemandeDevisServiceImpl implements DemandeDevisService {
         String nomEntreprise = entreprise.getName(); // par exemple
 
         return new CreateDemandeDevisResponseBody(
-                "Réservation effectuée avec succès !",
-                entreprise,
+                entreprise.getId(),
+                entreprise.getName(),
                 demandeDevis.getContactFirstName(),
                 demandeDevis.getContactLastName(),
                 demandeDevis.getNumberOfInterns(),
                 demandeDevis.isAcceptDevis()
         );
+    }
+
+
+    @Override
+    public List<CreateDemandeDevisResponseBody> getAllDemandeDevis() {
+        return demandeDevisRepository.findAll()
+                .stream()
+                .map(CreateDemandeDevisResponseBody::from)
+                .toList();
     }
 }

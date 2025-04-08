@@ -159,7 +159,7 @@ public class InscriptionController {
 
 
 
-    @PreAuthorize("hasRole('PARTICULIER')")
+    @PreAuthorize("hasRole('PARTICULIER') or hasRole('ENTREPRISE')")
     @GetMapping("/me")
     public ResponseEntity<List<Inscription>> getInscriptionsByUser(@AuthenticationPrincipal UserDetails userDetails) {
         Long userId = userService.getUserIdByUsername(userDetails.getUsername());
@@ -175,7 +175,6 @@ public class InscriptionController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteBooking(@PathVariable Long id){
         return inscriptionService.delete(id);
     }
