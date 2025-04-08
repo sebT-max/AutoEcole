@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -117,6 +118,9 @@ public class InscriptionServiceImpl implements InscriptionService {
         // Sauvegarder le fichier et son nom
         if (fileName != null && !fileName.isEmpty()) {
             try {
+                if (!Objects.equals(fileName.getContentType(), "application/pdf")) {
+                    throw new IOException("Le fichier doit être un PDF");
+                }
                 String fileStoredName = fileService.saveFile(fileName);  // Sauvegarde du fichier et récupération du nom
                 inscription.setLettrePdf(fileStoredName);  // Sauvegarder le nom du fichier
             } catch (IOException e) {

@@ -19,10 +19,33 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
     private static final String UPLOAD_DIR = "uploads/";
 
+//    @Override
+//    public String saveFile(MultipartFile file) throws IOException {
+//        if (file == null || file.isEmpty()) {
+//            return null; // Aucun fichier fourni
+//        }
+//
+//        // Vérifier l'extension du fichier
+//        String originalFilename = file.getOriginalFilename();
+//        if (originalFilename != null && !originalFilename.toLowerCase().endsWith(".pdf")) {
+//            throw new IOException("Seuls les fichiers PDF sont acceptés");
+//        }
+//
+//        // Créer le répertoire si nécessaire
+//        Files.createDirectories(Paths.get(UPLOAD_DIR));
+//
+//        // Générer un nom unique pour le fichier
+//        String fileName = UUID.randomUUID() + "_" + originalFilename;
+//        Path filePath = Paths.get(UPLOAD_DIR, fileName);
+//
+//        // Sauvegarder le fichier
+//        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+//        return fileName; // Retourner le nom du fichier
+//    }
     @Override
     public String saveFile(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
-            return null; // Aucun fichier fourni
+            throw new IllegalArgumentException("Aucun fichier fourni");
         }
 
         // Vérifier l'extension du fichier
@@ -32,17 +55,17 @@ public class FileServiceImpl implements FileService {
         }
 
         // Créer le répertoire si nécessaire
-        Files.createDirectories(Paths.get(UPLOAD_DIR));
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        Files.createDirectories(uploadPath);
 
         // Générer un nom unique pour le fichier
         String fileName = UUID.randomUUID() + "_" + originalFilename;
-        Path filePath = Paths.get(UPLOAD_DIR, fileName);
+        Path filePath = uploadPath.resolve(fileName);
 
         // Sauvegarder le fichier
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         return fileName; // Retourner le nom du fichier
     }
-
 
     @Override
     public Resource getFileAsResource(String fileName) {
