@@ -35,61 +35,6 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final CodePromoRepository codePromoRepository;
     private final FileService fileService;
 
-//    @Override
-//    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, String fileName) {
-//
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        if (user == null) {
-//            throw new UserNotFoundException("User not authenticated");
-//        }
-//
-//        // Vérifier que le stage existe
-//        assert request.stageId() != null;
-//        Stage stage = stageRepository.findById(request.stageId())
-//                .orElseThrow(() -> new StageNotFoundException("Stage non trouvé"));
-//
-//        /*
-//        Vérifier si un code promo est appliqué
-//        CodePromo codePromo = null;
-//        if (request.codePromo() != null) {
-//            codePromo = codePromoRepository.findByCode(request.codePromo().getCode()); // Recherche par code promo
-//        }
-//
-//
-//
-//        // Si un code promo est trouvé, vérifier sa validité (expiration)
-//
-//        if (codePromo != null && codePromo.getExpiry_date().isAfter(LocalDate.now())) {
-//            // Appliquer la réduction (si nécessaire)
-//        } else if (codePromo != null) {
-//            throw new RuntimeException("Le code promo est expiré.");
-//        }
-//
-//         */
-//
-//        // Créer l'inscription
-//        Inscription inscription = new Inscription();
-//        inscription.setUser(user);
-//        inscription.setStage(stage);
-//        inscription.setStageType(request.stageType());
-//        inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
-//        inscription.setLettrePdf(fileName); // 🔥 Correction ici : utiliser le bon fichier
-//
-//        // Sauvegarde en base
-//        inscriptionRepository.save(inscription);
-//
-//        return new CreateInscriptionResponseBody(
-//                "Réservation effectuée avec succès !",
-//                inscription.getId(),
-//                inscription.getUser().getId(),
-//                inscription.getStage().getId(),
-//                inscription.getStageType(),
-//                inscription.getInscriptionStatut(),
-//                inscription.getLettrePdf()
-//        );
-//    }
-
     @Override
     public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, MultipartFile fileName) {
         // Récupérer le principal de Spring Security (utilisateur authentifié)
