@@ -49,7 +49,7 @@ public class InscriptionController {
 ////                return ResponseEntity.badRequest()
 ////                        .body(new CreateInscriptionResponseBody(
 ////                                "Le fichier doit être au format PDF", null, null, null, null, null, null));
-//            }
+//
 //
 //            // Sauvegarde de la lettre (retourne null si aucun fichier fourni)
 //            String fileName = fileService.saveFile(file);
@@ -176,7 +176,7 @@ public class InscriptionController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public boolean deleteBooking(@PathVariable Long id){
+    public boolean deleteInscription(@PathVariable Long id){
         return inscriptionService.delete(id);
     }
 

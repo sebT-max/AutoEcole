@@ -43,6 +43,7 @@ public class Inscription extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "inscription", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents;
+
 }
 
 

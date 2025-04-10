@@ -3,6 +3,8 @@ package com.example.AutoEcole.bll.serviceImpl;
 import com.example.AutoEcole.Exception.AccessDeniedException.AccessDeniedException;
 import com.example.AutoEcole.Exception.StageNotFoundException.StageNotFoundException;
 import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;
+import com.example.AutoEcole.api.model.Document.DocumentDTO;
+import com.example.AutoEcole.api.model.Document.DocumentMapper;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.bll.service.FileService;
@@ -35,6 +37,7 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final CodePromoRepository codePromoRepository;
     private final FileService fileService;
     private final DocumentRepository documentRepository; // Ajouter le repository des documents
+    private final DocumentMapper documentMapper;
 
     @Override
     public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, List<MultipartFile> files) throws IOException {
@@ -96,14 +99,24 @@ public class InscriptionServiceImpl implements InscriptionService {
             }
         }
 
-        // Retourner la réponse avec les informations de l'inscription
+        // Récupérer les documents après l'enregistrement
+        List<Document> documents = inscription.getDocuments();
+
+// Mapper les documents vers leurs DTOs (sécurisé même si documents est null)
+        List<DocumentDTO> documentDtos = Optional.ofNullable(inscription.getDocuments())
+                .orElse(List.of())
+                .stream()
+                .map(documentMapper::toDto)
+                .toList();
+
+// Retourner la réponse avec les informations de l'inscription
         return new CreateInscriptionResponseBody(
-                "Inscription enregistrée avec succès",
                 inscription.getId(),
                 user.getId(),
                 stage.getId(),
                 request.stageType(),
-                inscription.getInscriptionStatut()
+                inscription.getInscriptionStatut(),
+                documentDtos // 👈 ici
         );
     }
 
