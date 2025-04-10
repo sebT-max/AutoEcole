@@ -16,6 +16,7 @@ import java.util.Collection;
 @ToString
 @MappedSuperclass
 @Getter
+@Setter
 public abstract class BaseEntity<T extends Serializable> {
 
     @Id

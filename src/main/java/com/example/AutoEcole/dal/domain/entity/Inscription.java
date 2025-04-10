@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -40,8 +41,9 @@ public class Inscription extends BaseEntity<Long> {
     @JoinColumn(name = "code_promo_id") // Correction du mapping
     private CodePromo codePromo;
 
-    @Column
-    private String lettrePdf;  // Sauvegarder le nom du fichier PDF (et non MultipartFile)
-
+    @OneToMany(mappedBy = "inscription", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents;
 }
+
+
 

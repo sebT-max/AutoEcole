@@ -17,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -30,15 +32,14 @@ public class InscriptionController {
     private final FileService fileService;
 
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CreateInscriptionResponseBody> create2(@Valid CreateInscriptionRequestBody request,
-                                                                 @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<CreateInscriptionResponseBody> createInscription(
+            @RequestPart("request") CreateInscriptionRequestBody request,
+            @RequestPart(name = "files", required = false) List<MultipartFile> files) throws IOException {
 
-        // Appel du service pour créer l'inscription
-        CreateInscriptionResponseBody response = inscriptionService.createInscription(request, file);
-
-        // Retourner la réponse avec l'objet response
+        CreateInscriptionResponseBody response = inscriptionService.createInscription(request, files);
         return ResponseEntity.ok(response);
     }
+
 
 //        try {
 //            // Vérifier que le fichier est bien un PDF

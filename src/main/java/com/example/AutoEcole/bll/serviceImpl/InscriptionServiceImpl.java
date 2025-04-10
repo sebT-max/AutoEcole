@@ -7,20 +7,20 @@ import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.bll.service.FileService;
 import com.example.AutoEcole.bll.service.InscriptionService;
+import com.example.AutoEcole.dal.domain.entity.Document;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.domain.enum_.DocumentType;
 import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
-import com.example.AutoEcole.dal.repository.CodePromoRepository;
-import com.example.AutoEcole.dal.repository.InscriptionRepository;
-import com.example.AutoEcole.dal.repository.StageRepository;
-import com.example.AutoEcole.dal.repository.UserRepository;
+import com.example.AutoEcole.dal.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,9 +34,11 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final StageRepository stageRepository;
     private final CodePromoRepository codePromoRepository;
     private final FileService fileService;
+    private final DocumentRepository documentRepository; // Ajouter le repository des documents
 
     @Override
-    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, MultipartFile fileName) {
+    public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, List<MultipartFile> files) throws IOException {
+
         // Récupérer le principal de Spring Security (utilisateur authentifié)
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -55,37 +57,69 @@ public class InscriptionServiceImpl implements InscriptionService {
 
         // Créer l'inscription
         Inscription inscription = new Inscription();
-        inscription.setUser(user);  // Assigner l'utilisateur récupéré
-        inscription.setStage(stage);  // Assigner le stage
+        inscription.setUser(user);
+        inscription.setStage(stage);
         inscription.setStageType(request.stageType());
         inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
 
-        // Sauvegarder le fichier et son nom
-        if (fileName != null && !fileName.isEmpty()) {
-            try {
-                if (!Objects.equals(fileName.getContentType(), "application/pdf")) {
-                    throw new IOException("Le fichier doit être un PDF");
+        // Sauvegarder l'inscription avant de gérer les fichiers
+        inscriptionRepository.save(inscription);
+
+        // Traiter les fichiers uploadés
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    try {
+                        // Enregistrer le fichier
+                        String filename = fileService.saveFile(file);
+
+                        // Déterminer le type du document basé sur le fichier
+                        DocumentType documentType = determineDocumentType(file);
+
+                        // Créer un document et l'associer à l'inscription
+                        Document document = Document.builder()
+                                .fileName(filename)
+                                .filePath("uploads/" + filename) // Chemin où le fichier est stocké
+                                .uploadedAt(LocalDateTime.now())
+                                .user(user)
+                                .inscription(inscription) // Lier le document à l'inscription
+                                .type(documentType) // Déterminer le type (PERMIS_RECTO, PERMIS_VERSO, etc.)
+                                .build();
+
+                        // Sauvegarder le document
+                        documentRepository.save(document);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erreur lors de l'enregistrement du fichier : " + file.getOriginalFilename(), e);
+                    }
                 }
-                String fileStoredName = fileService.saveFile(fileName);  // Sauvegarde du fichier et récupération du nom
-                inscription.setLettrePdf(fileStoredName);  // Sauvegarder le nom du fichier
-            } catch (IOException e) {
-                throw new RuntimeException("Erreur lors du téléchargement du fichier PDF", e);
             }
         }
 
-        // Sauvegarder l'inscription dans la base de données
-        inscriptionRepository.save(inscription);
-
         // Retourner la réponse avec les informations de l'inscription
         return new CreateInscriptionResponseBody(
-                "Réservation effectuée avec succès !",
+                "Inscription enregistrée avec succès",
                 inscription.getId(),
-                inscription.getUser().getId(),
-                inscription.getStage().getId(),
-                inscription.getStageType(),
+                user.getId(),
+                stage.getId(),
+                request.stageType(),
                 inscription.getInscriptionStatut()
         );
     }
+
+    private DocumentType determineDocumentType(MultipartFile file) {
+        // Exemple de logique pour déterminer le type de document en fonction du nom du fichier
+        String fileName = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
+
+        if (fileName.contains("recto")) {
+            return DocumentType.PERMIS_RECTO;
+        } else if (fileName.contains("verso")) {
+            return DocumentType.PERMIS_VERSO;
+        } else {
+            return DocumentType.PIECE_IDENTITE; // Par défaut, c'est une pièce d'identité
+        }
+    }
+
 
 
     /*

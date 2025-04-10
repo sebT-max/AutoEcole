@@ -15,11 +15,12 @@ import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.il.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +31,14 @@ public class ParticulierController {
 
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody @Valid ParticulierRegisterRequestBody request){
-        Long id = particulierService.register(request);
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> register(
+            @RequestPart("request") @Valid ParticulierRegisterRequestBody request,
+            @RequestPart(name = "files", required = false) List<MultipartFile> files) {
+        Long id = particulierService.register(request, files); // <-- on envoie les fichiers au service
         return ResponseEntity.ok(id);
     }
+
     @PostMapping("/login")
     public ResponseEntity<ParticulierLoginResponseBody> login(@RequestBody @Valid ParticulierLoginRequestBody request) {
         Particulier particulier = (Particulier)userService.login(request.email(), request.password());

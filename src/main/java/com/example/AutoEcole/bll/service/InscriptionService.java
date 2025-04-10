@@ -5,11 +5,14 @@ import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface InscriptionService {
 
-    CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, MultipartFile fileName);
+//    CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, MultipartFile fileName);
+
+    CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, List<MultipartFile> files) throws IOException;
 
     List<Inscription> getInscriptionsByUserId(Long userId);
 
