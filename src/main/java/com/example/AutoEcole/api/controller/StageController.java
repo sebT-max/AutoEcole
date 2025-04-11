@@ -20,7 +20,7 @@ public class StageController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CreateStageResponseBody> createStage(@RequestBody @Valid CreateStageRequestBody request){
+    public ResponseEntity<CreateStageResponseBody> createStage(@RequestBody @Valid CreateStageRequestBody request) throws Exception {
         return ResponseEntity.ok(stageService.createStage(request));
     }
 
@@ -30,7 +30,7 @@ public class StageController {
     }
 
     @GetMapping("/{id}")
-    public Stage getStageById(@PathVariable Long id){
+    public CreateStageResponseBody getStageById(@PathVariable Long id) throws Exception {
         return stageService.getStageById(id);
     }
 
@@ -40,9 +40,9 @@ public class StageController {
 
     public ResponseEntity<Boolean> updateBooking(
             @PathVariable Long id,
-            @RequestBody @Valid CreateStageRequestBody request) {
+            @RequestBody @Valid CreateStageRequestBody request) throws Exception {
 
-        Stage stage = stageService.getStageById(id);
+        CreateStageResponseBody stage = stageService.getStageById(id);
         if (stage == null) {
             return ResponseEntity.notFound().build();
         }

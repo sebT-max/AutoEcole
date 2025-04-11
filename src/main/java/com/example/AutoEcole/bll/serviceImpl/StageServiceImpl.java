@@ -2,12 +2,15 @@ package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.Stage.CreateStageRequestBody;
 import com.example.AutoEcole.api.model.Stage.CreateStageResponseBody;
+import com.example.AutoEcole.bll.service.MapboxService;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.dal.domain.entity.*;
 import com.example.AutoEcole.dal.repository.StageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,34 +21,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StageServiceImpl implements StageService {
     private final StageRepository stageRepository;
+    private final MapboxService mapboxService;
 
     @Override
-    public CreateStageResponseBody createStage(CreateStageRequestBody request) {
+    public CreateStageResponseBody createStage(CreateStageRequestBody request) throws Exception {
+        Stage stage = request.toEntity();
+        stageRepository.save(stage);
 
-        //User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // Récupérer coordonnées Mapbox
+        String fullAddress = stage.getFullAddress();
+        String geocodeJson = mapboxService.getGeocodeData(fullAddress);
+        double latitude = extractLatitude(geocodeJson);
+        double longitude = extractLongitude(geocodeJson);
 
-        Stage stage = new Stage();
-        stage.setDateDebut(request.dateDebut());
-        stage.setDateFin(request.dateFin());
-        stage.setPrice(request.price());
-        stage.setCity(request.city());
-        stage.setStreet(request.street());
-        stage.setArrondissement(request.arrondissement());
-        stage.setCapacity(request.capacity());
-        stage.setOrganisation(request.organisation());
-       stageRepository.save(stage);
-       //retour
-
-        return new CreateStageResponseBody(
-                stage.getDateDebut(),
-                stage.getDateFin(),
-                stage.getPrice(),
-                stage.getCity(),
-                stage.getStreet(),
-                stage.getArrondissement(),
-                stage.getCapacity(),
-                stage.getOrganisation()
-        );
+        return CreateStageResponseBody.fromEntity(stage, latitude, longitude);
     }
 
     @Override
@@ -54,32 +43,23 @@ public class StageServiceImpl implements StageService {
     }
 
     @Override
-    public Stage getStageById(Long id) {
+    public CreateStageResponseBody getStageById(Long id) throws Exception {
         Stage stageById = stageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Voyage non trouvé"));
-        return stageById;
+                .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
+
+        String fullAddress = stageById.getFullAddress();
+        String geocodeJson = mapboxService.getGeocodeData(fullAddress);
+        double latitude = extractLatitude(geocodeJson);
+        double longitude = extractLongitude(geocodeJson);
+
+        return CreateStageResponseBody.fromEntity(stageById, latitude, longitude);
     }
 
     @Override
     @Transactional
-    public boolean update(Long id, Stage stage) {
-        Stage stageToUpdate = getStageById(id);
-        if (stageToUpdate == null) {
-            throw new EntityNotFoundException("Réservation avec l'ID " + id + " non trouvée");
-        }
-        try{
-            stageToUpdate.setDateDebut(stage.getDateDebut());
-            stageToUpdate.setDateFin(stage.getDateFin());
-            stageToUpdate.setPrice(stage.getPrice());
-            stageToUpdate.setCity(String.valueOf(stage.getPrice()));
-            stageToUpdate.setStreet(stage.getStreet());
-            stageToUpdate.setArrondissement(stage.getArrondissement());
-            stageToUpdate.setCapacity(stage.getCapacity());
-            stageToUpdate.setOrganisation(stage.getOrganisation());
-            return true;
-        }catch(Exception e){
-            return false;
-        }
+    public boolean update(Long id, Stage stage) throws Exception {
+        CreateStageResponseBody stageToUpdate = getStageById(id);
+        throw new EntityNotFoundException("Réservation avec l'ID " + id + " non trouvée");
     }
 
     @Override
@@ -112,6 +92,22 @@ public class StageServiceImpl implements StageService {
     }
 
      */
+    private double extractLatitude(String json) throws JSONException {
+        // Utilise un parseur JSON ici : Jackson, org.json, etc.
+        JSONObject obj = new JSONObject(json);
+        return obj.getJSONArray("features").getJSONObject(0)
+                .getJSONObject("geometry")
+                .getJSONArray("coordinates")
+                .getDouble(1); // Latitude = index 1
+    }
+
+    private double extractLongitude(String json) throws JSONException {
+        JSONObject obj = new JSONObject(json);
+        return obj.getJSONArray("features").getJSONObject(0)
+                .getJSONObject("geometry")
+                .getJSONArray("coordinates")
+                .getDouble(0); // Longitude = index 0
+    }
 
 }
 

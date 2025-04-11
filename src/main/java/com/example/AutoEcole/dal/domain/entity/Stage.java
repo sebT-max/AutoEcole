@@ -44,6 +44,36 @@ public class Stage extends BaseEntity<Long> {
     @Column
     private String organisation;
 
+    @Transient
+    private String fullAddress;
+
+    public String getFullAddress() {
+        // Assurez-vous que chaque composant de l'adresse est bien présent
+        StringBuilder fullAddress = new StringBuilder();
+
+        if (city != null && !city.isEmpty()) {
+            fullAddress.append(city);
+        }
+
+        if (street != null && !street.isEmpty()) {
+            if (!fullAddress.isEmpty()) fullAddress.append(", ");
+            fullAddress.append(street);
+        }
+
+        return fullAddress.toString();
+    }
+
+    public Stage(LocalDate dateDebut, LocalDate dateFin, String city, String street,
+                 String arrondissement, Integer capacity, Double price, String organisation) {
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.city = city;
+        this.street = street;
+        this.arrondissement = arrondissement;
+        this.capacity = capacity;
+        this.price = price;
+        this.organisation = organisation;
+    }
 //    @Column
 //    @Enumerated(EnumType.STRING)
 //    private TwoDaysOfTheWeek twoDaysOfTheWeek;

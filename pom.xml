@@ -90,10 +90,20 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itext-core</artifactId>
-			<version>9.1.0</version> <!-- Dernière version connue -->
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
 		</dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.itextpdf</groupId>-->
+<!--			<artifactId>itext-core</artifactId>-->
+<!--			<version>9.1.0</version> &lt;!&ndash; Dernière version connue &ndash;&gt;-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>

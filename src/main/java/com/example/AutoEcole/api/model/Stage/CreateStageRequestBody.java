@@ -7,16 +7,16 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public record CreateStageRequestBody(
-   LocalDate dateDebut,
-   LocalDate dateFin,
-   String city,
-   String street,
-   String arrondissement,
-   int capacity,
-   Double price,
-   String organisation
+        LocalDate dateDebut,
+        LocalDate dateFin,
+        String city,
+        String street,
+        String arrondissement,
+        int capacity,
+        Double price,
+        String organisation
 ) {
     public Stage toEntity() {
-        return new Stage(dateDebut,dateFin,city,street,arrondissement,capacity,price,organisation);
+        return new Stage(dateDebut, dateFin, city, street, arrondissement, capacity, price, organisation);
     }
 }
