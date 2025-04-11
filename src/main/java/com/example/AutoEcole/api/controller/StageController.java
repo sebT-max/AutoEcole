@@ -34,6 +34,25 @@ public class StageController {
         return stageService.getStageById(id);
     }
 
+
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+
+    public ResponseEntity<Boolean> updateBooking(
+            @PathVariable Long id,
+            @RequestBody @Valid CreateStageRequestBody request) {
+
+        Stage stage = stageService.getStageById(id);
+        if (stage == null) {
+            return ResponseEntity.notFound().build();
+        }
+        // Crée la nouvelle entité Booking avec les nouvelles valeurs, en conservant l'utilisateur existant
+        Boolean updatedPlanet = stageService.update(id,request.toEntity());
+
+        return ResponseEntity.ok(updatedPlanet);
+    }
+
+
     @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public boolean deleteStage(@PathVariable Long id){

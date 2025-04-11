@@ -16,13 +16,13 @@ public class DemandeDevis extends BaseEntity<Long> {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
     @Column
     private String contactFirstName;
     @Column
     private String contactLastName;
     @Column
     private int numberOfInterns;
+    @Column
+    private String message;
 
-    private boolean acceptDevis;
 }

@@ -25,7 +25,8 @@ public class StageServiceImpl implements StageService {
         //User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Stage stage = new Stage();
-        stage.setDateDeStage(request.dateDeStage());
+        stage.setDateDebut(request.dateDebut());
+        stage.setDateFin(request.dateFin());
         stage.setPrice(request.price());
         stage.setCity(request.city());
         stage.setStreet(request.street());
@@ -36,7 +37,8 @@ public class StageServiceImpl implements StageService {
        //retour
 
         return new CreateStageResponseBody(
-                stage.getDateDeStage(),
+                stage.getDateDebut(),
+                stage.getDateFin(),
                 stage.getPrice(),
                 stage.getCity(),
                 stage.getStreet(),
@@ -66,7 +68,8 @@ public class StageServiceImpl implements StageService {
             throw new EntityNotFoundException("Réservation avec l'ID " + id + " non trouvée");
         }
         try{
-            stageToUpdate.setDateDeStage(stage.getDateDeStage());
+            stageToUpdate.setDateDebut(stage.getDateDebut());
+            stageToUpdate.setDateFin(stage.getDateFin());
             stageToUpdate.setPrice(stage.getPrice());
             stageToUpdate.setCity(String.valueOf(stage.getPrice()));
             stageToUpdate.setStreet(stage.getStreet());

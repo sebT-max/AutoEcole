@@ -10,7 +10,7 @@ public record CreateDemandeDevisResponseBody(
         String contactFirstName,
         String contactLastName,
         int numberOfInterns,
-        boolean acceptDevis
+        String message
 ) {
     public static CreateDemandeDevisResponseBody from(DemandeDevis demandeDevis) {
         String entrepriseName = (demandeDevis.getUser() instanceof Entreprise e) ? e.getName() : "Inconnu";
@@ -20,7 +20,7 @@ public record CreateDemandeDevisResponseBody(
                 demandeDevis.getContactFirstName(),
                 demandeDevis.getContactLastName(),
                 demandeDevis.getNumberOfInterns(),
-                demandeDevis.isAcceptDevis()
+                demandeDevis.getMessage()
         );
     }
 }

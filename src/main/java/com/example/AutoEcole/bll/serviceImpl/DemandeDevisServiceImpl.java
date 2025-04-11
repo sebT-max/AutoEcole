@@ -36,7 +36,7 @@ public class DemandeDevisServiceImpl implements DemandeDevisService {
         demandeDevis.setContactFirstName(request.contactFirstName());
         demandeDevis.setContactLastName(request.contactLastName());
         demandeDevis.setNumberOfInterns(request.numberOfInterns());
-        demandeDevis.setAcceptDevis(request.acceptDevis());
+        demandeDevis.setMessage(request.message());
 
         demandeDevisRepository.save(demandeDevis);
 
@@ -49,7 +49,7 @@ public class DemandeDevisServiceImpl implements DemandeDevisService {
                 demandeDevis.getContactFirstName(),
                 demandeDevis.getContactLastName(),
                 demandeDevis.getNumberOfInterns(),
-                demandeDevis.isAcceptDevis()
+                demandeDevis.getMessage()
         );
     }
 

@@ -8,6 +8,6 @@ public record CreateDemandeDevisRequestBody(
         String contactFirstName,
         String contactLastName,
         int numberOfInterns,
-        boolean acceptDevis
+        String message
 ) {
 }
