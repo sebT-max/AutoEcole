@@ -13,11 +13,9 @@ public record CreateStageResponseBody(
         String arrondissement,
         int capacity,
         Double price,
-        String organisation,
-        double latitude,
-        double longitude
+        String organisation
 ) {
-    public static CreateStageResponseBody fromEntity(Stage stage, double latitude, double longitude) {
+    public static CreateStageResponseBody fromEntity(Stage stage) {
         return new CreateStageResponseBody(
                 stage.getId(),
                 stage.getDateDebut(),
@@ -27,9 +25,7 @@ public record CreateStageResponseBody(
                 stage.getArrondissement(),
                 stage.getCapacity(),
                 stage.getPrice(),
-                stage.getOrganisation(),
-                latitude,
-                longitude
+                stage.getOrganisation()
         );
     }
 }

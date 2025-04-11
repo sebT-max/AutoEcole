@@ -2,7 +2,6 @@ package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.Stage.CreateStageRequestBody;
 import com.example.AutoEcole.api.model.Stage.CreateStageResponseBody;
-import com.example.AutoEcole.bll.service.MapboxService;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.dal.domain.entity.*;
 import com.example.AutoEcole.dal.repository.StageRepository;
@@ -21,20 +20,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StageServiceImpl implements StageService {
     private final StageRepository stageRepository;
-    private final MapboxService mapboxService;
 
     @Override
     public CreateStageResponseBody createStage(CreateStageRequestBody request) throws Exception {
         Stage stage = request.toEntity();
         stageRepository.save(stage);
-
-        // Récupérer coordonnées Mapbox
-        String fullAddress = stage.getFullAddress();
-        String geocodeJson = mapboxService.getGeocodeData(fullAddress);
-        double latitude = extractLatitude(geocodeJson);
-        double longitude = extractLongitude(geocodeJson);
-
-        return CreateStageResponseBody.fromEntity(stage, latitude, longitude);
+        return CreateStageResponseBody.fromEntity(stage);
     }
 
     @Override
@@ -47,12 +38,7 @@ public class StageServiceImpl implements StageService {
         Stage stageById = stageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
 
-        String fullAddress = stageById.getFullAddress();
-        String geocodeJson = mapboxService.getGeocodeData(fullAddress);
-        double latitude = extractLatitude(geocodeJson);
-        double longitude = extractLongitude(geocodeJson);
-
-        return CreateStageResponseBody.fromEntity(stageById, latitude, longitude);
+        return CreateStageResponseBody.fromEntity(stageById);
     }
 
     @Override
