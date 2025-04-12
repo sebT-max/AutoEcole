@@ -36,17 +36,34 @@ public class StageServiceImpl implements StageService {
     @Override
     public CreateStageResponseBody getStageById(Long id) throws Exception {
         Stage stageById = stageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Stage non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Stage avec l'ID " + id + " non trouvé"));
 
         return CreateStageResponseBody.fromEntity(stageById);
     }
 
     @Override
     @Transactional
-    public boolean update(Long id, Stage stage) throws Exception {
-        CreateStageResponseBody stageToUpdate = getStageById(id);
-        throw new EntityNotFoundException("Réservation avec l'ID " + id + " non trouvée");
+    public boolean update(Long id, Stage updatedStage) throws Exception {
+        Stage existingStage = stageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Stage avec l'ID " + id + " non trouvé"));
+
+        // Met à jour les champs que tu veux (exemple ci-dessous, à adapter)
+        existingStage.setDateDebut(updatedStage.getDateDebut());
+        existingStage.setDateFin(updatedStage.getDateFin());
+        existingStage.setCity(updatedStage.getCity());
+        existingStage.setStreet(updatedStage.getStreet());
+        existingStage.setArrondissement(updatedStage.getArrondissement());
+        existingStage.setCapacity(updatedStage.getCapacity());
+        existingStage.setArrondissement(updatedStage.getArrondissement());
+        existingStage.setPrice(updatedStage.getPrice());
+        existingStage.setOrganisation(updatedStage.getOrganisation());
+        // ... autres champs à mettre à jour
+
+        stageRepository.save(existingStage); // facultatif avec @Transactional si l'entité est modifiée
+
+        return true;
     }
+
 
     @Override
     public boolean delete(Long id) {
