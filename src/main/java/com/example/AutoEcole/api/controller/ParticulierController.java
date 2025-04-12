@@ -3,9 +3,11 @@ package com.example.AutoEcole.api.controller;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginRequestBody;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginResponseBody;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterRequestBody;
+import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterResponseBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierLoginRequestBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierLoginResponseBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierRegisterRequestBody;
+import com.example.AutoEcole.api.model.Particulier.ParticulierRegisterResponseBody;
 import com.example.AutoEcole.bll.service.EntrepriseService;
 import com.example.AutoEcole.bll.service.ParticulierService;
 import com.example.AutoEcole.bll.service.UserService;
@@ -31,12 +33,25 @@ public class ParticulierController {
 
     private final JwtUtil jwtUtil;
 
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> register(
-            @RequestPart("request") @Valid ParticulierRegisterRequestBody request,
-            @RequestPart(name = "files", required = false) List<MultipartFile> files) {
-        Long id = particulierService.register(request, files); // <-- on envoie les fichiers au service
-        return ResponseEntity.ok(id);
+//    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<ParticulierRegisterResponseBody> register(
+//            @RequestPart("request") @Valid ParticulierRegisterRequestBody request,
+//            @RequestPart(name = "files", required = false) List<MultipartFile> files) {
+////        Long id = particulierService.register(request, files); // <-- on envoie les fichiers au service
+////        return ResponseEntity.ok(id);
+//        Particulier saved = particulierService.register(request, files); // change ton service pour renvoyer l'entité complète
+//        String token = jwtUtil.generateToken(saved); // génération du token
+//        ParticulierRegisterResponseBody response = ParticulierRegisterResponseBody.fromEntity(saved, token);
+//        return ResponseEntity.ok(response);
+//    }
+    @PostMapping("/register")
+    public ResponseEntity<ParticulierRegisterResponseBody> register(@RequestBody @Valid ParticulierRegisterRequestBody request) {
+//        Long id = particulierService.register(request, files); // <-- on envoie les fichiers au service
+//        return ResponseEntity.ok(id);
+        Particulier saved = particulierService.register(request); // change ton service pour renvoyer l'entité complète
+        String token = jwtUtil.generateToken(saved); // génération du token
+        ParticulierRegisterResponseBody response = ParticulierRegisterResponseBody.fromEntity(saved, token);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")

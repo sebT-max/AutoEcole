@@ -3,6 +3,7 @@ package com.example.AutoEcole.api.controller;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginRequestBody;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginResponseBody;
 import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterRequestBody;
+import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterResponseBody;
 import com.example.AutoEcole.api.model.user.LoginRequestBody;
 import com.example.AutoEcole.api.model.user.LoginResponseBody;
 import com.example.AutoEcole.bll.service.EntrepriseService;
@@ -26,11 +27,36 @@ public class EntrepriseController {
     private final EntrepriseService entrepriseService;
     private final JwtUtil jwtUtil;
 
+//    @PostMapping("/register")
+//    public ResponseEntity<Long> register(@RequestBody @Valid EntrepriseRegisterRequestBody request){
+//        Long id = entrepriseService.register(request);
+//        return ResponseEntity.ok(id);
+//    }
+//    @PostMapping("/register")
+//    public ResponseEntity<EntrepriseRegisterResponseBody> register(@RequestBody @Valid EntrepriseRegisterRequestBody request) {
+//        // 1. Inscription
+//        Long id = entrepriseService.register(request);
+//
+//        // 2. Authentifier l'utilisateur (comme dans le login)
+//        Entreprise entreprise = (Entreprise) userService.login(request.email(), request.password());
+//
+//        // 3. Générer le token JWT
+//        String token = jwtUtil.generateToken(entreprise);
+//
+//        // 4. Construire la réponse avec les infos + token
+//        EntrepriseRegisterResponseBody responseBody = EntrepriseRegisterResponseBody.fromEntity(entreprise);
+//        responseBody.setToken(token);
+//
+//        return ResponseEntity.ok(responseBody);
+//    }
     @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody @Valid EntrepriseRegisterRequestBody request){
-        Long id = entrepriseService.register(request);
-        return ResponseEntity.ok(id);
+    public ResponseEntity<EntrepriseRegisterResponseBody> register(@RequestBody @Valid EntrepriseRegisterRequestBody request){
+        Entreprise saved = entrepriseService.register(request); // change ton service pour renvoyer l'entité complète
+        String token = jwtUtil.generateToken(saved); // génération du token
+        EntrepriseRegisterResponseBody response = EntrepriseRegisterResponseBody.fromEntity(saved, token);
+        return ResponseEntity.ok(response);
     }
+
     @PostMapping("/login")
     public ResponseEntity<EntrepriseLoginResponseBody> login(@RequestBody @Valid EntrepriseLoginRequestBody request) {
         Entreprise entreprise = (Entreprise) userService.login(request.email(), request.password());

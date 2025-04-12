@@ -20,7 +20,7 @@ public class ParticulierRegisterResponseBody {
         this.role = role;
     }
 
-    public static ParticulierRegisterResponseBody fromEntity(Particulier particulier){
+    public static ParticulierRegisterResponseBody fromEntity(Particulier particulier, String token){
         return new ParticulierRegisterResponseBody(
                 particulier.getId(),
                 particulier.getLastname(),
