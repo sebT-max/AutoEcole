@@ -26,6 +26,10 @@ public class Entreprise extends User {
     @Column()
     private String name;
 
+    @OneToMany(mappedBy = "entreprise")
+    private List<Particulier> employees;
+
+
     //@Column(nullable = false)
     //private String email;
 

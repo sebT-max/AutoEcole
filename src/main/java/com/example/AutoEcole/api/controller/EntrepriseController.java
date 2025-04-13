@@ -1,23 +1,19 @@
 package com.example.AutoEcole.api.controller;
 
-import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginRequestBody;
-import com.example.AutoEcole.api.model.Entreprise.EntrepriseLoginResponseBody;
-import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterRequestBody;
-import com.example.AutoEcole.api.model.Entreprise.EntrepriseRegisterResponseBody;
+import com.example.AutoEcole.api.model.Entreprise.*;
 import com.example.AutoEcole.api.model.user.LoginRequestBody;
 import com.example.AutoEcole.api.model.user.LoginResponseBody;
 import com.example.AutoEcole.bll.service.EntrepriseService;
+import com.example.AutoEcole.bll.service.PrivateLinkService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Entreprise;
+import com.example.AutoEcole.dal.domain.entity.PrivateLink;
 import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.il.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EntrepriseController {
     private final UserService userService;
     private final EntrepriseService entrepriseService;
+    private final PrivateLinkService privateLinkService;
     private final JwtUtil jwtUtil;
 
 //    @PostMapping("/register")
@@ -67,5 +64,17 @@ public class EntrepriseController {
 
         return ResponseEntity.ok(entrepriseLoginResponseBody);
     }
+    @PostMapping("/inscription/{token}")
+    public ResponseEntity<?> registerViaPrivateLink(@PathVariable String token,
+                                                    @Valid @RequestBody EmployeeInscriptionForm form) {
+        PrivateLink link = privateLinkService.getValidLink(token);
+
+        // On passe ensuite le lien et le form au service qui crée le user
+        userService.registerEmployeeViaPrivateLink(form, link);
+
+        return ResponseEntity.ok("Inscription réussie !");
+    }
+
+
 
 }

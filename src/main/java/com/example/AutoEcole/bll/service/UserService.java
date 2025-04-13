@@ -1,5 +1,7 @@
 package com.example.AutoEcole.bll.service;
 
+import com.example.AutoEcole.api.model.Entreprise.EmployeeInscriptionForm;
+import com.example.AutoEcole.dal.domain.entity.PrivateLink;
 import com.example.AutoEcole.dal.domain.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -16,4 +18,5 @@ public interface UserService extends UserDetailsService {
     public Long getUserIdByUsername(String username);
     boolean delete(Long id);
 
+    void registerEmployeeViaPrivateLink(EmployeeInscriptionForm form, PrivateLink link);
 }

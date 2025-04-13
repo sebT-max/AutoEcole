@@ -8,17 +8,21 @@ import com.example.AutoEcole.api.model.Particulier.ParticulierLoginRequestBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierLoginResponseBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierRegisterRequestBody;
 import com.example.AutoEcole.api.model.Particulier.ParticulierRegisterResponseBody;
+import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkResponse;
 import com.example.AutoEcole.bll.service.EntrepriseService;
 import com.example.AutoEcole.bll.service.ParticulierService;
+import com.example.AutoEcole.bll.service.PrivateLinkService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Entreprise;
 import com.example.AutoEcole.dal.domain.entity.Particulier;
+import com.example.AutoEcole.dal.domain.entity.PrivateLink;
 import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.il.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +34,7 @@ import java.util.List;
 public class ParticulierController {
     private final ParticulierService particulierService;
     private final UserService userService;
+    private final PrivateLinkService privateLinkService;
 
     private final JwtUtil jwtUtil;
 
@@ -63,6 +68,12 @@ public class ParticulierController {
         particulierLoginResponseBody.setToken(token);
 
         return ResponseEntity.ok(particulierLoginResponseBody);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/private-links")
+    public List<PrivateLinkResponse> getAllLinks() {
+        return privateLinkService.getAllLinks();
     }
 
 }

@@ -106,5 +106,10 @@ public Particulier register(ParticulierRegisterRequestBody requestBody) {
             return DocumentType.PIECE_IDENTITE;
         }
     }
+
+    public boolean isAdmin(Particulier user) {
+        return user.getRole().getName().equals("ADMIN");
+    }
+
 }
 

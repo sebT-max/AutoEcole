@@ -1,18 +1,25 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.Exception.ressourceNotFound.RessourceNotFoundException;
+import com.example.AutoEcole.api.model.Entreprise.EmployeeInscriptionForm;
 import com.example.AutoEcole.bll.service.UserService;
+import com.example.AutoEcole.dal.domain.entity.Particulier;
+import com.example.AutoEcole.dal.domain.entity.PrivateLink;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.entity.User;
+import com.example.AutoEcole.dal.repository.PrivateLinkRepository;
 import com.example.AutoEcole.dal.repository.RoleRepository;
 import com.example.AutoEcole.dal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PrivateLinkRepository privateLinkRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -81,6 +89,44 @@ public class UserServiceImpl implements UserService {
         //NOT IMPLEMENTED YET
         return false;
     }
+
+    @Override
+    public void registerEmployeeViaPrivateLink(EmployeeInscriptionForm form, PrivateLink link) {
+        // Vérifier l'unicité de l'e-mail
+        if (userRepository.findByEmail(form.email()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email déjà utilisé");
+        }
+// Vérification si le lien a déjà été utilisé ou expiré
+        if (!link.isActive()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lien expiré ou déjà utilisé");
+        }
+
+        if (link.getExpirationDate() != null && link.getExpirationDate().isBefore(LocalDateTime.now())) {
+            link.setActive(false);  // Le lien est expiré, on le marque comme inactif
+            privateLinkRepository.save(link);
+            throw new ResponseStatusException(HttpStatus.GONE, "Lien expiré");
+        }
+        // Créer un nouvel utilisateur (Particulier)
+        Particulier employee = new Particulier();
+        employee.setEmail(form.email());
+        employee.setFirstname(form.firstname());
+        employee.setLastname(form.lastName());
+        employee.setPassword(passwordEncoder.encode(form.password()));
+
+        // Associer l'entreprise
+        employee.setEntreprise(link.getEntreprise());
+
+        // Associer le stage concerné par le lien privé
+        employee.setStage(link.getStage());
+
+        // Affecter le rôle "particulier" ou "employe" selon ta stratégie
+        Role role = roleRepository.findRoleByName("PARTICULIER") // ou "employe"
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Rôle introuvable"));
+        employee.setRole(role);
+
+        userRepository.save(employee);
+    }
+
 
 }
 

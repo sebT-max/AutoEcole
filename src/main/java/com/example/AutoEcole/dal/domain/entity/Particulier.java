@@ -26,7 +26,11 @@ public class Particulier extends User {
     @Column(name ="birthdate",nullable = false)
     private LocalDate birthdate;
 
+    @ManyToOne
+    private Entreprise entreprise;
 
+    @ManyToOne
+    private Stage stage;
     //@Column(nullable = false)
     //private String email;
 
