@@ -43,4 +43,9 @@ public class EntrepriseServiceImpl implements EntrepriseService {
         // 🔁 On retourne l'objet entier, pas juste l'ID
         return savedEntreprise;
     }
+    @Override
+    public Entreprise getEntrepriseByEmail(String email) {
+        return entrepriseRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Entreprise non trouvée pour l'email : " + email));
+    }
 }

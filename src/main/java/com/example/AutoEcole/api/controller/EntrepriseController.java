@@ -12,8 +12,11 @@ import com.example.AutoEcole.dal.domain.entity.User;
 import com.example.AutoEcole.il.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -74,7 +77,8 @@ public class EntrepriseController {
 
         return ResponseEntity.ok("Inscription réussie !");
     }
-
-
-
+    @GetMapping("/email/{email}")
+    public Entreprise getCompanyByEmail(@PathVariable String email) {
+        return entrepriseService.getEntrepriseByEmail(email);
+    }
 }

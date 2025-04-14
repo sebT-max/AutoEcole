@@ -25,7 +25,7 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
     private final EntrepriseRepository entrepriseRepository ;
 
     @Override
-    public String createPrivateLink(Long stageId, Long entrepriseId) {
+    public PrivateLinkResponse createPrivateLink(Long stageId, Long entrepriseId) {
         Stage stage = stageRepository.findById(stageId).orElseThrow();
         Entreprise entreprise = entrepriseRepository.findById(entrepriseId).orElseThrow();
 
@@ -37,9 +37,16 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
         link.setToken(token);
         link.setActive(false);
         link.setUsageCount(link.getUsageCount() + 1);
+        link.setExpirationDate(LocalDateTime.now().plusDays(7)); // exemple : expire dans 7 jours
         privateLinkRepository.save(link);
 
-        return "https://tonsite.com/stages/entreprise/inscription/" + token;
+        return new PrivateLinkResponse(
+                token,
+                link.getExpirationDate(),
+                entreprise.getId(),
+                entreprise.getName(),
+                stage.getId()
+        );
     }
     @Override
     public PrivateLink getValidLink(String token) {

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface PrivateLinkService {
-    public String createPrivateLink(Long stageId, Long entrepriseId);
+    public PrivateLinkResponse createPrivateLink(Long stageId, Long entrepriseId);
 
     PrivateLink getValidLink(String token);
 
