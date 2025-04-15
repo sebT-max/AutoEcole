@@ -22,7 +22,8 @@ public class Document extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private DocumentType type;
 
-    private String filePath; // Le chemin vers le fichier
+    @Column(name = "file_url") // Spécifie explicitement le nom de la colonne
+    private String fileUrl; // Le chemin vers le fichier
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -40,10 +41,10 @@ public class Document extends BaseEntity<Long> {
     }
 
     // Vous pouvez garder le constructeur avec tous les arguments si nécessaire pour d'autres usages
-    public Document(String fileName, DocumentType type, String filePath, User user, Inscription inscription, LocalDateTime uploadedAt) {
+    public Document(String fileName, DocumentType type, String fileUrl, User user, Inscription inscription, LocalDateTime uploadedAt) {
         this.fileName = fileName;
         this.type = type;
-        this.filePath = filePath;
+        this.fileUrl = fileUrl;
         this.user = user;
         this.inscription = inscription;
         this.uploadedAt = uploadedAt;

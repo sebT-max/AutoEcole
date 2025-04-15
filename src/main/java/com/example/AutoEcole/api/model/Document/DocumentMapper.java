@@ -4,32 +4,35 @@ import com.example.AutoEcole.dal.domain.entity.Document;
 import com.example.AutoEcole.dal.domain.enum_.DocumentType;
 import org.springframework.stereotype.Component;
 
-@Component // ou @Service si tu veux l'injecter ailleurs
+@Component
 public class DocumentMapper {
 
+    // Conversion d'un Document vers un DocumentDTO
     public DocumentDTO toDto(Document doc) {
         if (doc == null) return null;
 
         return new DocumentDTO(
                 doc.getId(),
                 doc.getFileName(),
-                doc.getType().name(),
-                "/api/files/" + doc.getFilePath(),
+                doc.getType(),
+                doc.getFileUrl(), // Utilisation de l'URL Cloudinary directement
                 doc.getUser() != null ? doc.getUser().getId() : null,
                 doc.getInscription() != null ? doc.getInscription().getId() : null,
                 doc.getUploadedAt()
         );
     }
 
-    // Optionnel : de DTO vers Entity
+    // Conversion d'un DocumentDTO vers un Document (utilisation d'un constructeur plutôt que des setters)
     public Document toEntity(DocumentDTO dto) {
-        Document document = new Document();
-        document.setId(dto.id());
-        document.setFileName(dto.fileName());
-        document.setType(DocumentType.valueOf(dto.type()));
-        document.setFilePath(dto.url().replace("/api/files/", ""));
-        // Pas de user ni d’inscription ici directement, à gérer ailleurs
-        document.setUploadedAt(dto.uploadedAt());
+        Document document = new Document(
+                dto.fileName(), // Directement depuis le DTO
+                dto.type(),
+                dto.url(), // Pas besoin de découper l’URL Cloudinary
+                null, // User et Inscription peuvent être null à ce stade, selon tes besoins
+                null,
+                dto.uploadedAt()
+        );
+        document.setId(dto.id()); // Si tu veux conserver l'ID dans l'entité.
         return document;
     }
 }

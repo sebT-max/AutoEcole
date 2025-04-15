@@ -1,9 +1,8 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.Particulier.ParticulierRegisterRequestBody;
-import com.example.AutoEcole.bll.service.FileService;
+import com.example.AutoEcole.bll.service.CloudinaryService;
 import com.example.AutoEcole.bll.service.ParticulierService;
-import com.example.AutoEcole.dal.domain.entity.Document;
 import com.example.AutoEcole.dal.domain.entity.Particulier;
 import com.example.AutoEcole.dal.domain.entity.Role;
 import com.example.AutoEcole.dal.domain.enum_.DocumentType;
@@ -15,9 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -26,7 +23,7 @@ public class ParticulierServiceImpl implements ParticulierService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final FileService fileService;
+    private final CloudinaryService fileService;
     private final DocumentRepository documentRepository;
 
 //    @Override
@@ -94,18 +91,24 @@ public Particulier register(ParticulierRegisterRequestBody requestBody) {
     return savedUser;
 }
 
+    private static final Map<String, DocumentType> KEYWORD_TO_TYPE = Map.ofEntries(
+            Map.entry("recto", DocumentType.PERMIS_RECTO),
+            Map.entry("verso", DocumentType.PERMIS_VERSO),
+            Map.entry("piece-identite-recto", DocumentType.PIECE_IDENTITE_RECTO),
+            Map.entry("piece-identite-verso", DocumentType.PIECE_IDENTITE_VERSO),
+            Map.entry("48n", DocumentType.LETTRE_48N)
+    );
+
     private DocumentType determineDocumentType(MultipartFile file) {
-        // Exemple de logique pour déterminer le type de document
         String fileName = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
 
-        if (fileName.contains("recto")) {
-            return DocumentType.PERMIS_RECTO;
-        } else if (fileName.contains("verso")) {
-            return DocumentType.PERMIS_VERSO;
-        } else {
-            return DocumentType.PIECE_IDENTITE;
-        }
+        return KEYWORD_TO_TYPE.entrySet().stream()
+                .filter(entry -> fileName.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(DocumentType.PIECE_IDENTITE_RECTO); // Valeur par défaut
     }
+
 
     public boolean isAdmin(Particulier user) {
         return user.getRole().getName().equals("ADMIN");

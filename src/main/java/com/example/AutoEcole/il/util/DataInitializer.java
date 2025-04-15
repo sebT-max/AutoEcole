@@ -100,6 +100,32 @@ public class DataInitializer implements CommandLineRunner {
 //            stage2.setMonth(Month.JUNE);
             stageRepository.save(stage2);
 
+            Stage stage3 = new Stage();
+            stage3.setDateDebut(LocalDate.of(2025, 6, 2));
+            stage3.setDateFin(LocalDate.of(2025, 6, 3));
+            stage3.setCity("Marseille");
+            stage3.setStreet("rue notre dame 14");
+            stage3.setArrondissement("16ième");
+            stage3.setCapacity(20);
+            stage3.setPrice(260.00);
+            stage3.setOrganisation("9h-12h || 13h-17h");
+//            stage1.setTwoDaysOfTheWeek(TwoDaysOfTheWeek.LUNDI_MARDI);
+//            stage1.setMonth(Month.JUNE);
+            stageRepository.save(stage3);
+
+            Stage stage4 = new Stage();
+            stage4.setDateDebut(LocalDate.of(2025, 6, 4));
+            stage4.setDateFin(LocalDate.of(2025, 6, 5));
+            stage4.setCity("Marseille");
+            stage4.setStreet("rue notre dame 16");
+            stage4.setArrondissement("14ième");
+            stage4.setCapacity(20);
+            stage4.setPrice(260.00);
+            stage4.setOrganisation("9h-12h || 13h-17h");
+//            stage1.setTwoDaysOfTheWeek(TwoDaysOfTheWeek.LUNDI_MARDI);
+//            stage1.setMonth(Month.JUNE);
+            stageRepository.save(stage4);
+
             DemandeDevis demandeDevis1= new DemandeDevis();
             demandeDevis1.setUser(companyClient1);
             demandeDevis1.setContactFirstName("Jean Pascal");

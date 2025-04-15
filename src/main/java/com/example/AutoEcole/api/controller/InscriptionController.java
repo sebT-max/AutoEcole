@@ -1,14 +1,14 @@
 package com.example.AutoEcole.api.controller;
 
+import com.example.AutoEcole.api.model.Document.DocumentDTO;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
-import com.example.AutoEcole.bll.service.FileService;
+import com.example.AutoEcole.bll.service.CloudinaryService;
 import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.bll.service.StageService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class InscriptionController {
     private final InscriptionService inscriptionService;
     private final UserService userService;
     private final StageService stageService;
-    private final FileService fileService;
+    private final CloudinaryService fileService;
 
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CreateInscriptionResponseBody> createInscription(
@@ -182,8 +182,29 @@ public class InscriptionController {
 
     @PatchMapping("/{id}/validate")
     @PreAuthorize("hasRole('ADMIN')")
-    public Inscription validateInscriptionById(@PathVariable Long id){
-        return inscriptionService.validateInscriptionById(id);
+    public CreateInscriptionResponseBody validateInscriptionById(@PathVariable Long id){
+        Inscription inscription = inscriptionService.validateInscriptionById(id);
+        return mapToResponseBody(inscription);
+    }
+    private CreateInscriptionResponseBody mapToResponseBody(Inscription inscription) {
+        return new CreateInscriptionResponseBody(
+                inscription.getId(),
+                inscription.getUser().getId(),
+                inscription.getStage().getId(),
+                inscription.getStageType(),
+                inscription.getInscriptionStatut(),
+                inscription.getDocuments().stream()
+                        .map(doc -> new DocumentDTO(
+                                doc.getId(),
+                                doc.getFileName(),
+                                doc.getType(),
+                                doc.getFileUrl(),
+                                doc.getUser().getId(),
+                                doc.getInscription().getId(),
+                                doc.getUploadedAt()
+                        ))
+                        .toList()
+        );
     }
     /*
 

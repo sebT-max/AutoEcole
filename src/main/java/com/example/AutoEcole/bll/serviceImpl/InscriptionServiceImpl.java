@@ -1,5 +1,6 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
+import com.cloudinary.Cloudinary;
 import com.example.AutoEcole.Exception.AccessDeniedException.AccessDeniedException;
 import com.example.AutoEcole.Exception.StageNotFoundException.StageNotFoundException;
 import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;
@@ -7,7 +8,7 @@ import com.example.AutoEcole.api.model.Document.DocumentDTO;
 import com.example.AutoEcole.api.model.Document.DocumentMapper;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
-import com.example.AutoEcole.bll.service.FileService;
+import com.example.AutoEcole.bll.service.CloudinaryService;
 import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.dal.domain.entity.Document;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
@@ -23,9 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,62 +35,69 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final InscriptionRepository inscriptionRepository;
     private final StageRepository stageRepository;
     private final CodePromoRepository codePromoRepository;
-    private final FileService fileService;
+    private final CloudinaryService cloudinaryService;
     private final DocumentRepository documentRepository; // Ajouter le repository des documents
     private final DocumentMapper documentMapper;
 
     @Override
     public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, List<MultipartFile> files) throws IOException {
 
-        // Récupérer le principal de Spring Security (utilisateur authentifié)
+        // Récupérer l'utilisateur authentifié depuis le contexte de sécurité
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Vérifier si le principal est une instance de User ou de ses sous-classes concrètes
         User user;
         if (principal instanceof User) {
-            user = (User) principal;  // Cast en toute sécurité si c'est un User
+            user = (User) principal;
         } else {
             throw new UserNotFoundException("User not authenticated");
         }
 
-        // Vérifier que le stage existe
-        assert request.stageId() != null;
-        Stage stage = stageRepository.findById(request.stageId())
+        // Vérifier l'existence du stage
+        if (request.getStageId() == null) {
+            throw new IllegalArgumentException("L'ID du stage ne peut pas être nul");
+        }
+
+        Stage stage = stageRepository.findById(request.getStageId())
                 .orElseThrow(() -> new StageNotFoundException("Stage non trouvé"));
 
-        // Créer l'inscription
+        // Créer une nouvelle inscription
         Inscription inscription = new Inscription();
         inscription.setUser(user);
         inscription.setStage(stage);
-        inscription.setStageType(request.stageType());
+        inscription.setStageType(request.getStageType());
         inscription.setInscriptionStatut(InscriptionStatut.EN_ATTENTE);
 
-        // Sauvegarder l'inscription avant de gérer les fichiers
+        // Sauvegarde initiale pour obtenir l'ID (si nécessaire pour la relation)
         inscriptionRepository.save(inscription);
 
-        // Traiter les fichiers uploadés
+        // Préparer l'ensemble des documents
+        Set<Document> documentSet = new HashSet<>();
+
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 if (!file.isEmpty()) {
                     try {
-                        // Enregistrer le fichier
-                        String filename = fileService.saveFile(file);
+                        Map<String, String> uploadResult = cloudinaryService.upload(file);
+                        String url = uploadResult.get("url");
 
-                        // Déterminer le type du document basé sur le fichier
+                        // Validation si l'URL est valide (en général Cloudinary renverra une URL correcte si le fichier est bien uploadé)
+                        if (url == null || url.isEmpty()) {
+                            throw new IOException("L'URL du fichier est vide ou invalide.");
+                        }
+
                         DocumentType documentType = determineDocumentType(file);
 
-                        // Créer un document et l'associer à l'inscription
                         Document document = Document.builder()
-                                .fileName(filename)
-                                .filePath("uploads/" + filename) // Chemin où le fichier est stocké
+                                .fileName(file.getOriginalFilename())
+                                .fileUrl(url)  // URL récupérée de Cloudinary
                                 .uploadedAt(LocalDateTime.now())
                                 .user(user)
-                                .inscription(inscription) // Lier le document à l'inscription
-                                .type(documentType) // Déterminer le type (PERMIS_RECTO, PERMIS_VERSO, etc.)
+                                .inscription(inscription)
+                                .type(documentType)
                                 .build();
 
-                        // Sauvegarder le document
                         documentRepository.save(document);
+                        documentSet.add(document);
 
                     } catch (IOException e) {
                         throw new RuntimeException("Erreur lors de l'enregistrement du fichier : " + file.getOriginalFilename(), e);
@@ -99,38 +106,45 @@ public class InscriptionServiceImpl implements InscriptionService {
             }
         }
 
-        // Récupérer les documents après l'enregistrement
-        List<Document> documents = inscription.getDocuments();
+        // Lier les documents à l'inscription et sauvegarder à nouveau si nécessaire
+        if (!documentSet.isEmpty()) {
+            inscription.setDocuments(documentSet);
+            inscriptionRepository.save(inscription); // Optionnel si cascade OK
+        }
 
-// Mapper les documents vers leurs DTOs (sécurisé même si documents est null)
-        List<DocumentDTO> documentDtos = Optional.ofNullable(inscription.getDocuments())
-                .orElse(List.of())
-                .stream()
+        // Mapper les documents vers leurs DTOs et les convertir en List
+        List<DocumentDTO> documentDtos = documentSet.stream()
                 .map(documentMapper::toDto)
-                .toList();
+                .collect(Collectors.toList()); // Conversion en List
 
-// Retourner la réponse avec les informations de l'inscription
         return new CreateInscriptionResponseBody(
                 inscription.getId(),
                 user.getId(),
                 stage.getId(),
-                request.stageType(),
+                request.getStageType(),
                 inscription.getInscriptionStatut(),
-                documentDtos // 👈 ici
+                documentDtos // 👈 ici, tu passes maintenant une List
         );
     }
 
+
+
+    private static final Map<String, DocumentType> KEYWORD_TO_TYPE = Map.ofEntries(
+            Map.entry("recto", DocumentType.PERMIS_RECTO),
+            Map.entry("verso", DocumentType.PERMIS_VERSO),
+            Map.entry("piece-identite-recto", DocumentType.PIECE_IDENTITE_RECTO),
+            Map.entry("piece-identite-verso", DocumentType.PIECE_IDENTITE_VERSO),
+            Map.entry("48n", DocumentType.LETTRE_48N)
+    );
+
     private DocumentType determineDocumentType(MultipartFile file) {
-        // Exemple de logique pour déterminer le type de document en fonction du nom du fichier
         String fileName = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
 
-        if (fileName.contains("recto")) {
-            return DocumentType.PERMIS_RECTO;
-        } else if (fileName.contains("verso")) {
-            return DocumentType.PERMIS_VERSO;
-        } else {
-            return DocumentType.PIECE_IDENTITE; // Par défaut, c'est une pièce d'identité
-        }
+        return KEYWORD_TO_TYPE.entrySet().stream()
+                .filter(entry -> fileName.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(DocumentType.PIECE_IDENTITE_RECTO); // Valeur par défaut
     }
 
 
