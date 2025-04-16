@@ -2,6 +2,7 @@ package com.example.AutoEcole.bll.service;
 
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
+import com.example.AutoEcole.api.model.Inscription.InscriptionListResponse;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,7 @@ public interface InscriptionService {
 
     List<Inscription> getInscriptionsByUserId(Long userId);
 
-    List<Inscription> getAllInscriptions();
+    List<InscriptionListResponse> getAllInscriptions();
 
 
     Inscription getInscriptionById(Long id);

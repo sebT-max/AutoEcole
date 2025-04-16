@@ -27,7 +27,7 @@ public class DocumentMapper {
         Document document = new Document(
                 dto.fileName(), // Directement depuis le DTO
                 dto.type(),
-                dto.url(), // Pas besoin de découper l’URL Cloudinary
+                dto.fileUrl(), // Pas besoin de découper l’URL Cloudinary
                 null, // User et Inscription peuvent être null à ce stade, selon tes besoins
                 null,
                 dto.uploadedAt()

@@ -3,6 +3,7 @@ package com.example.AutoEcole.api.controller;
 import com.example.AutoEcole.api.model.Document.DocumentDTO;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
+import com.example.AutoEcole.api.model.Inscription.InscriptionListResponse;
 import com.example.AutoEcole.bll.service.CloudinaryService;
 import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.bll.service.StageService;
@@ -67,12 +68,17 @@ public class InscriptionController {
         return ResponseEntity.ok(inscriptions);
     }
 
-
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Inscription> getAllInscriptions(){
-        return inscriptionService.getAllInscriptions();
+    public ResponseEntity<List<InscriptionListResponse>> getAllInscriptions() {
+        List<InscriptionListResponse> inscriptions = inscriptionService.getAllInscriptions();
+        return ResponseEntity.ok(inscriptions);
     }
+//    @GetMapping("/all")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public List<Inscription> getAllInscriptions(){
+//        return inscriptionService.getAllInscriptions();
+//    }
 
     @DeleteMapping("/delete/{id}")
     public boolean deleteInscription(@PathVariable Long id){

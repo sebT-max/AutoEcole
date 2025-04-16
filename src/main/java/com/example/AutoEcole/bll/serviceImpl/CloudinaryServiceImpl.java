@@ -26,10 +26,15 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             throw new IllegalArgumentException("Aucun fichier fourni");
         }
 
-        // Upload du fichier vers Cloudinary
-        Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        // Détection du type MIME
+        String contentType = file.getContentType();
+        String resourceType = (contentType != null && contentType.startsWith("image")) ? "image" : "raw";
 
-        // Extraction de l'URL sécurisée et du public_id
+        // Upload vers Cloudinary avec le bon type
+        Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                "resource_type", resourceType
+        ));
+
         return Map.of(
                 "url", result.get("secure_url").toString(),
                 "public_id", result.get("public_id").toString()

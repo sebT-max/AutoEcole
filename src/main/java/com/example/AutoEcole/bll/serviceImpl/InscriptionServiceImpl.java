@@ -8,6 +8,8 @@ import com.example.AutoEcole.api.model.Document.DocumentDTO;
 import com.example.AutoEcole.api.model.Document.DocumentMapper;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
+import com.example.AutoEcole.api.model.Inscription.InscriptionListResponse;
+import com.example.AutoEcole.api.model.Inscription.InscriptionMapper;
 import com.example.AutoEcole.bll.service.CloudinaryService;
 import com.example.AutoEcole.bll.service.InscriptionService;
 import com.example.AutoEcole.dal.domain.entity.Document;
@@ -38,6 +40,8 @@ public class InscriptionServiceImpl implements InscriptionService {
     private final CloudinaryService cloudinaryService;
     private final DocumentRepository documentRepository; // Ajouter le repository des documents
     private final DocumentMapper documentMapper;
+    private final InscriptionMapper inscriptionMapper;
+
 
     @Override
     public CreateInscriptionResponseBody createInscription(CreateInscriptionRequestBody request, List<MultipartFile> files) throws IOException {
@@ -183,21 +187,26 @@ public class InscriptionServiceImpl implements InscriptionService {
     }
 
     @Override
-    public List<Inscription> getAllInscriptions() {
+    public List<InscriptionListResponse> getAllInscriptions() {
+        // Récupération de l'utilisateur authentifié
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        // Récupération de l'utilisateur authentifié
         if (user == null) {
-            throw new UserNotFoundException("User not authenticated");
+            throw new UserNotFoundException("Utilisateur non authentifié");
         }
 
+        // Vérifie si l'utilisateur est un administrateur
         boolean isAdmin = user.getRole().getName().equals("ADMIN");
 
         if (!isAdmin) {
             throw new AccessDeniedException("Accès refusé : vous n'avez pas les permissions nécessaires.");
         }
 
-        return inscriptionRepository.findAll();
+        // Récupère toutes les inscriptions et les mappe en DTOs
+        return inscriptionRepository.findAll()
+                .stream()
+                .map(inscriptionMapper::toListResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
