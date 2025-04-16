@@ -1,6 +1,7 @@
 package com.example.AutoEcole.api.controller;
 
 import com.example.AutoEcole.api.model.Entreprise.*;
+import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkResponse;
 import com.example.AutoEcole.api.model.user.LoginRequestBody;
 import com.example.AutoEcole.api.model.user.LoginResponseBody;
 import com.example.AutoEcole.bll.service.EntrepriseService;
@@ -14,8 +15,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -80,5 +83,19 @@ public class EntrepriseController {
     @GetMapping("/email/{email}")
     public Entreprise getCompanyByEmail(@PathVariable String email) {
         return entrepriseService.getEntrepriseByEmail(email);
+    }
+    @GetMapping("/privateLinks")
+    public ResponseEntity<List<PrivateLinkResponse>> getMyPrivateLinks(Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+
+        // Vérification stricte du rôle
+        if (!(currentUser instanceof Entreprise)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Entreprise entreprise = (Entreprise) currentUser; // Downcast
+        List<PrivateLinkResponse> links = privateLinkService.getPrivateLinksForEntreprise(entreprise);
+
+        return ResponseEntity.ok(links); // Retourne les données transformées par le service
     }
 }

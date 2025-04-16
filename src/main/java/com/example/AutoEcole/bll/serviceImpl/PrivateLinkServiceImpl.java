@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -79,4 +80,20 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
                 ))
                 .toList();
     }
+    @Override
+    public List<PrivateLinkResponse> getPrivateLinksForEntreprise(Entreprise entreprise) {
+        List<PrivateLink> links = privateLinkRepository.findByCompanyId(entreprise.getId());
+
+        return links.stream()
+                .map(link -> new PrivateLinkResponse(
+                        link.getToken(),
+                        link.getExpirationDate(),
+                        entreprise.getId(),
+                        entreprise.getName(),
+                        link.getStage().getId() // Assure-toi que getStage() n'est pas null
+                ))
+                .collect(Collectors.toList());
+    }
+
+
 }
