@@ -29,7 +29,7 @@ public class Entreprise extends User {
     @OneToMany(mappedBy = "entreprise")
     private List<Particulier> employees;
 
-
+    private String privateToken;
     //@Column(nullable = false)
     //private String email;
 
