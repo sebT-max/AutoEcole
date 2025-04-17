@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -64,19 +65,26 @@ public class DocumentServiceImpl implements DocumentService {
 
         return documentRepo.save(existing);
     }
-
     @Override
-    public List<Document> getByUserId(Long userId) {
-        List<Document> documents = documentRepo.findAllByUserId(userId);
-        if (documents.isEmpty()) {
-            throw new RuntimeException("Aucune réservation trouvée pour l'utilisateur avec l'ID : " + userId);
+    public Set<Document> getByUserId(Long userId) {
+        Set<Document> documentSet = documentRepo.findAllByUserId(userId);
+        if (documentSet.isEmpty()) {
+            throw new RuntimeException("Aucun document trouvé pour l'utilisateur avec l'ID : " + userId);
         }
-        return documents;
+        return documentSet; // ✅ Tu retournes le set récupéré
     }
+
+//    @Override
+//    public List<Document> getByUserId(Long userId) {
+//        List<Document> documents = (List<Document>) documentRepo.findAllByUserId(userId);
+//        if (documents.isEmpty()) {
+//            throw new RuntimeException("Aucune réservation trouvée pour l'utilisateur avec l'ID : " + userId);
+//        }
+//        return documents;
+//    }
 
     @Override
     public List<Document> getByInscriptionId(Long id) {
-        return documentRepo.findAllByInscriptionId(id);
+        return (List<Document>) documentRepo.findAllByInscriptionId(id);
     }
 }
-

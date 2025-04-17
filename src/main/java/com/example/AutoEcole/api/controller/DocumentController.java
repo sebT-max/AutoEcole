@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/V1/documents")
@@ -55,9 +56,9 @@ public class DocumentController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<Document>> getByUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Set<Document>> getByUser(@AuthenticationPrincipal UserDetails userDetails) {
         Long userId = userService.getUserIdByUsername(userDetails.getUsername());
-        List<Document> documents = documentService.getByUserId(userId);
+        Set<Document> documents = documentService.getByUserId(userId);
 
         return ResponseEntity.ok(documents);
     }
@@ -67,4 +68,3 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.getByInscriptionId(inscriptionId));
     }
 }
-

@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -49,4 +50,18 @@ public class Document extends BaseEntity<Long> {
         this.inscription = inscription;
         this.uploadedAt = uploadedAt;
     }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        Document that = (Document) o;
+//        return this.getType() == that.getType()
+//                && Objects.equals(this.getInscription(), that.getInscription());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getType(), getInscription());
+//    }
 }

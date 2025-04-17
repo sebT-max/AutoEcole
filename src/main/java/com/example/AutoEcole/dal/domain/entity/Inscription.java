@@ -46,6 +46,7 @@ public class Inscription extends BaseEntity<Long> {
     @JoinColumn(name = "code_promo_id") // Correction du mapping
     private CodePromo codePromo;
 
+
     @JsonBackReference
     @OneToMany(mappedBy = "inscription", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Document> documents;

@@ -1,6 +1,5 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
-import com.cloudinary.Cloudinary;
 import com.example.AutoEcole.Exception.AccessDeniedException.AccessDeniedException;
 import com.example.AutoEcole.Exception.StageNotFoundException.StageNotFoundException;
 import com.example.AutoEcole.Exception.UserNotFound.UserNotFoundException;

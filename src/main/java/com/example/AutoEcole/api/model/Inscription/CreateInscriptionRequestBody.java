@@ -23,5 +23,3 @@ public class CreateInscriptionRequestBody {
         private InscriptionStatut inscriptionStatut;
         private List<DocumentDTO> documents;
 }
-
-

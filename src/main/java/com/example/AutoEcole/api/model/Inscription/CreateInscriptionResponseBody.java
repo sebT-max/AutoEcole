@@ -13,6 +13,6 @@ public record CreateInscriptionResponseBody(
         StageType stageType,
         InscriptionStatut inscriptionStatut,
         List<DocumentDTO>documents
-       //CodePromo codePromo
+        //CodePromo codePromo
 
 ) {}
