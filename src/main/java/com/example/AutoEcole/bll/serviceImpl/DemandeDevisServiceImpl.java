@@ -46,6 +46,8 @@ public class DemandeDevisServiceImpl implements DemandeDevisService {
         return new CreateDemandeDevisResponseBody(
                 entreprise.getId(),
                 entreprise.getName(),
+                entreprise.getEmail(),
+                entreprise.getTelephone(),
                 demandeDevis.getContactFirstName(),
                 demandeDevis.getContactLastName(),
                 demandeDevis.getNumberOfInterns(),
