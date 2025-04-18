@@ -133,11 +133,9 @@ public class InscriptionServiceImpl implements InscriptionService {
 
 
     private static final Map<String, DocumentType> KEYWORD_TO_TYPE = Map.ofEntries(
-            Map.entry("recto", DocumentType.PERMIS_RECTO),
-            Map.entry("verso", DocumentType.PERMIS_VERSO),
-            Map.entry("piece-identite-recto", DocumentType.PIECE_IDENTITE_RECTO),
-            Map.entry("piece-identite-verso", DocumentType.PIECE_IDENTITE_VERSO),
-            Map.entry("48n", DocumentType.LETTRE_48N)
+            Map.entry("permis", DocumentType.PERMIS),
+            Map.entry("identite", DocumentType.PIECE_IDENTITE),
+            Map.entry("pdf", DocumentType.LETTRE_48N)
     );
 
     private DocumentType determineDocumentType(MultipartFile file) {
@@ -147,7 +145,7 @@ public class InscriptionServiceImpl implements InscriptionService {
                 .filter(entry -> fileName.contains(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .orElse(DocumentType.PIECE_IDENTITE_RECTO); // Valeur par défaut
+                .orElse(DocumentType.PIECE_IDENTITE); // Valeur par défaut
     }
 
 
