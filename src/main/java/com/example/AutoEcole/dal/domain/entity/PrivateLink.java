@@ -32,7 +32,7 @@ public class PrivateLink extends BaseEntity<Long> {
     private boolean active = true;
 
     @Column(nullable = false)
-    private int maxUsages = 1;
+    private int maxUsages;
 
     @Column(nullable = false)
     private int usageCount = 0;

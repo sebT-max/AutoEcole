@@ -2,6 +2,7 @@ package com.example.AutoEcole.api.controller;
 
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkRequest;
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkResponse;
+import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkValidationResponse;
 import com.example.AutoEcole.bll.service.PrivateLinkService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.Entreprise;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,8 +37,17 @@ public class PrivateLinkController {
     }
 
     @GetMapping("/validate/{token}")
-    public ResponseEntity<PrivateLink> validateLink(@PathVariable String token) {
-        PrivateLink link = privateLinkService.getValidLink(token);
-        return ResponseEntity.ok(link);
+    public ResponseEntity<PrivateLinkValidationResponse> validateLink(@PathVariable String token) {
+        try {
+            // Récupère le lien validé
+            PrivateLinkValidationResponse response = privateLinkService.validateAndGetInfo(token);
+
+            // Retourne une réponse de validation avec succès
+            return ResponseEntity.ok(response);
+        } catch (ResponseStatusException e) {
+            // Si une exception est lancée (par exemple, lien expiré ou usage dépassé), retourne un message d'erreur
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(new PrivateLinkValidationResponse(null, null, null, false, 0));
+        }
     }
 }

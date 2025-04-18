@@ -1,12 +1,15 @@
 package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkResponse;
+import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkValidationResponse;
 import com.example.AutoEcole.bll.service.PrivateLinkService;
 import com.example.AutoEcole.dal.domain.entity.Entreprise;
 import com.example.AutoEcole.dal.domain.entity.PrivateLink;
+import com.example.AutoEcole.dal.domain.entity.PrivateLinkUsageLog;
 import com.example.AutoEcole.dal.domain.entity.Stage;
 import com.example.AutoEcole.dal.repository.EntrepriseRepository;
 import com.example.AutoEcole.dal.repository.PrivateLinkRepository;
+import com.example.AutoEcole.dal.repository.PrivateLinkUsageLogRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,7 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
     private final PrivateLinkRepository privateLinkRepository ;
     private final StageRepository stageRepository ;
     private final EntrepriseRepository entrepriseRepository ;
+    private final PrivateLinkUsageLogRepository privateLinkUsageLogRepository;
 
     @Override
     public PrivateLinkResponse createPrivateLink(Long stageId, Long entrepriseId) {
@@ -67,6 +71,43 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
         return link;
     }
 
+    @Override
+    public PrivateLinkValidationResponse validateAndGetInfo(String token) {
+        PrivateLink link = privateLinkRepository.findByToken(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lien invalide"));
+
+        // Logique de validation du lien
+        if (link.getExpirationDate() != null && link.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.GONE, "Lien expiré");
+        }
+        if (!link.isActive()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien désactivé");
+        }
+        if (link.getUsageCount() >= link.getMaxUsages()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien déjà utilisé au maximum");
+        }
+
+        // Journalisation sans utilisateur authentifié
+        PrivateLinkUsageLog usageLog = new PrivateLinkUsageLog();
+        usageLog.setEmail("non-authentifié"); // Utilisation sans authentification
+        usageLog.setUsedAt(LocalDateTime.now());
+        usageLog.setLink(link);
+        privateLinkUsageLogRepository.save(usageLog);
+
+        // Incrémentation du nombre d'utilisations
+        link.setUsageCount(link.getUsageCount() + 1);
+        privateLinkRepository.save(link);
+
+        return new PrivateLinkValidationResponse(
+                link.getEntreprise().getName(),
+                link.getStage().getStreet(),
+                link.getExpirationDate(),
+                link.isActive(),
+                link.getMaxUsages() - link.getUsageCount()
+        );
+    }
+
+
     // Autres méthodes...
     @Override
     public List<PrivateLinkResponse> getAllLinks() {
@@ -93,6 +134,12 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
                         link.getStage().getId() // Assure-toi que getStage() n'est pas null
                 ))
                 .collect(Collectors.toList());
+    }
+    @Override
+    public void incrementUsage(PrivateLink privateLink) {
+        int currentUsage = privateLink.getUsageCount();
+        privateLink.setUsageCount(currentUsage + 1);
+        privateLinkRepository.save(privateLink);
     }
 
 
