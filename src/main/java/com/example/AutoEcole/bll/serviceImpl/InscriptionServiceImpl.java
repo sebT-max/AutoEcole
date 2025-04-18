@@ -126,7 +126,7 @@ public class InscriptionServiceImpl implements InscriptionService {
                 stage.getId(),
                 request.getStageType(),
                 inscription.getInscriptionStatut(),
-                documentDtos // 👈 ici, tu passes maintenant une List
+                documentDtos
         );
     }
 

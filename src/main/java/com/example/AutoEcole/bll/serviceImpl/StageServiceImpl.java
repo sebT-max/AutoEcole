@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StageServiceImpl implements StageService {
     private final StageRepository stageRepository;
+
+    @Override
+    public ResponseEntity<Stage> decrementStageCapacity(Long id){
+        Stage stage = stageRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Stage avec l'ID " + id + " non trouvé"));
+
+        if (stage.getCapacity() > 0) {
+            stage.setCapacity(stage.getCapacity() - 1);
+            stageRepository.save(stage);
+            return ResponseEntity.ok(stage);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 
     @Override
     public CreateStageResponseBody createStage(CreateStageRequestBody request) throws Exception {
@@ -87,6 +103,8 @@ public class StageServiceImpl implements StageService {
         }
         return stageRepository.searchByFilters(searchTerm);
     }
+
+
     /*
     @Override
     public List<Stage> searchStages(String entreprise, String localisation, Integer duree, LocalDate dateDebut) {

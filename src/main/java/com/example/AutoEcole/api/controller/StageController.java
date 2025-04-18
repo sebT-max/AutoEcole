@@ -64,4 +64,10 @@ public class StageController {
     public List<Stage> searchStages(@RequestParam String searchTerm) {
         return stageService.searchStages(searchTerm);
     }
+
+
+    @PutMapping("/{id}/decrement-capacity")
+    public ResponseEntity<Stage> decrementStageCapacity(@PathVariable Long id) {
+        return ResponseEntity.ok(stageService.decrementStageCapacity(id).getBody());
+    }
 }
