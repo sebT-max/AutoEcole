@@ -1,15 +1,15 @@
 package com.example.AutoEcole.api.controller;
 
 import com.example.AutoEcole.api.model.Document.DocumentDTO;
+import com.example.AutoEcole.api.model.Entreprise.EmployeeInscriptionForm;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionRequestBody;
 import com.example.AutoEcole.api.model.Inscription.CreateInscriptionResponseBody;
 import com.example.AutoEcole.api.model.Inscription.InscriptionListResponse;
-import com.example.AutoEcole.bll.service.CloudinaryService;
-import com.example.AutoEcole.bll.service.InscriptionService;
-import com.example.AutoEcole.bll.service.StageService;
-import com.example.AutoEcole.bll.service.UserService;
+import com.example.AutoEcole.bll.service.*;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 
+import com.example.AutoEcole.dal.domain.entity.PrivateLink;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +31,24 @@ public class InscriptionController {
     private final UserService userService;
     private final StageService stageService;
     private final CloudinaryService fileService;
+    private final PrivateLinkService privateLinkService;
+
+
+    @PostMapping("/{token}")
+    public ResponseEntity<?> registerViaPrivateLink(@PathVariable String token,
+                                                    @ModelAttribute EmployeeInscriptionForm form,
+                                                    @RequestPart(value = "cv", required = false) MultipartFile cv,
+                                                    @RequestPart(value = "photo", required = false) MultipartFile photo) throws IOException {
+        PrivateLink link = privateLinkService.getValidLink(token);
+
+        // Envoie les fichiers au service si nécessaire
+        userService.registerEmployeeViaPrivateLink(form, link, cv, photo);
+
+        return ResponseEntity.ok("Inscription réussie !");
+    }
+
+
+
 
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CreateInscriptionResponseBody> createInscription(

@@ -2,6 +2,7 @@ package com.example.AutoEcole.bll.serviceImpl;
 
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkResponse;
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkValidationResponse;
+import com.example.AutoEcole.api.model.Stage.StageInfoResponse;
 import com.example.AutoEcole.bll.service.PrivateLinkService;
 import com.example.AutoEcole.dal.domain.entity.Entreprise;
 import com.example.AutoEcole.dal.domain.entity.PrivateLink;
@@ -11,7 +12,10 @@ import com.example.AutoEcole.dal.repository.EntrepriseRepository;
 import com.example.AutoEcole.dal.repository.PrivateLinkRepository;
 import com.example.AutoEcole.dal.repository.PrivateLinkUsageLogRepository;
 import com.example.AutoEcole.dal.repository.StageRepository;
+import com.example.AutoEcole.il.config.LinkExpirationConfig;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,17 +26,29 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class PrivateLinkServiceImpl implements PrivateLinkService {
     private final PrivateLinkRepository privateLinkRepository ;
     private final StageRepository stageRepository ;
     private final EntrepriseRepository entrepriseRepository ;
     private final PrivateLinkUsageLogRepository privateLinkUsageLogRepository;
+    private final LinkExpirationConfig linkExpirationConfig;
+
+    public PrivateLinkServiceImpl(PrivateLinkRepository privateLinkRepository, StageRepository stageRepository, EntrepriseRepository entrepriseRepository, PrivateLinkUsageLogRepository privateLinkUsageLogRepository, LinkExpirationConfig linkExpirationConfig) {
+        this.privateLinkRepository = privateLinkRepository;
+        this.stageRepository = stageRepository;
+        this.entrepriseRepository = entrepriseRepository;
+        this.privateLinkUsageLogRepository = privateLinkUsageLogRepository;
+        this.linkExpirationConfig = linkExpirationConfig;
+    }
+
 
     @Override
     public PrivateLinkResponse createPrivateLink(Long stageId, Long entrepriseId) {
-        Stage stage = stageRepository.findById(stageId).orElseThrow();
-        Entreprise entreprise = entrepriseRepository.findById(entrepriseId).orElseThrow();
+        // Recherche des entités Stage et Entreprise
+        Stage stage = stageRepository.findById(stageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stage non trouvé"));
+        Entreprise entreprise = entrepriseRepository.findById(entrepriseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entreprise non trouvée"));
+
+//        int nombreStagiaires = facture.getNumberOfInterns(); // Ce champ est dans la facture
 
         String token = UUID.randomUUID().toString();
 
@@ -40,17 +56,21 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
         link.setStage(stage);
         link.setEntreprise(entreprise);
         link.setToken(token);
-        link.setActive(false);
-        link.setUsageCount(link.getUsageCount() + 1);
-        link.setExpirationDate(LocalDateTime.now().plusDays(7)); // exemple : expire dans 7 jours
+        link.setActive(true);
+        link.setUsageCount(0);
+        link.setMaxUsages(10);
+        link.setExpirationDate(LocalDateTime.now().plusDays(linkExpirationConfig.getDays())); // Expiration à partir de la config
         privateLinkRepository.save(link);
+
+        StageInfoResponse stageInfo = StageInfoResponse.fromEntity(stage); // Création du DTO StageInfoResponse
 
         return new PrivateLinkResponse(
                 token,
                 link.getExpirationDate(),
                 entreprise.getId(),
                 entreprise.getName(),
-                stage.getId()
+                stageInfo
+
         );
     }
     @Override
@@ -61,12 +81,12 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
         if (link.getExpirationDate() != null && link.getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new ResponseStatusException(HttpStatus.GONE, "Lien expiré");
         }
-        if (!link.isActive()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien désactivé");
-        }
-        if (link.getUsageCount() >= link.getMaxUsages()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien déjà utilisé au maximum");
-        }
+//        if (!link.isActive()) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien désactivé");
+//        }
+//        if (link.getUsageCount() >= link.getMaxUsages()) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien déjà utilisé au maximum");
+//        }
 
         return link;
     }
@@ -87,6 +107,14 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Lien déjà utilisé au maximum");
         }
 
+        // Vérification de la présence de l'entreprise et du stage
+        if (link.getEntreprise() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entreprise associée au lien introuvable");
+        }
+        if (link.getStage() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Stage associé au lien introuvable");
+        }
+
         // Journalisation sans utilisateur authentifié
         PrivateLinkUsageLog usageLog = new PrivateLinkUsageLog();
         usageLog.setEmail("non-authentifié"); // Utilisation sans authentification
@@ -98,14 +126,17 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
         link.setUsageCount(link.getUsageCount() + 1);
         privateLinkRepository.save(link);
 
-        return new PrivateLinkValidationResponse(
+        // Retour de la réponse avec toutes les informations
+        return PrivateLinkValidationResponse.fromEntities(
                 link.getEntreprise().getName(),
                 link.getStage().getStreet(),
+                link.getStage(),
                 link.getExpirationDate(),
                 link.isActive(),
                 link.getMaxUsages() - link.getUsageCount()
         );
     }
+
 
 
     // Autres méthodes...
@@ -117,9 +148,9 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
                         link.getExpirationDate(),
                         link.getEntreprise().getId(),
                         link.getEntreprise().getName(),
-                        link.getStage().getId()
+                        StageInfoResponse.fromEntity(link.getStage()) // Utilisation de StageInfoResponse
                 ))
-                .toList();
+                .collect(Collectors.toList());
     }
     @Override
     public List<PrivateLinkResponse> getPrivateLinksForEntreprise(Entreprise entreprise) {
@@ -131,7 +162,7 @@ public class PrivateLinkServiceImpl implements PrivateLinkService {
                         link.getExpirationDate(),
                         entreprise.getId(),
                         entreprise.getName(),
-                        link.getStage().getId() // Assure-toi que getStage() n'est pas null
+                        StageInfoResponse.fromEntity(link.getStage()) // Utilisation de StageInfoResponse
                 ))
                 .collect(Collectors.toList());
     }

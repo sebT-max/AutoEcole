@@ -16,7 +16,7 @@ public record EmployeeInscriptionForm(
         String email,
 
         @NotBlank(message = "Le mot de passe est obligatoire")
-        @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
-        String password
+        String telephone
+
 ) {}
 

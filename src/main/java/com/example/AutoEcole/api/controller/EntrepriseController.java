@@ -70,32 +70,10 @@ public class EntrepriseController {
 
         return ResponseEntity.ok(entrepriseLoginResponseBody);
     }
-    @PostMapping("/inscription/{token}")
-    public ResponseEntity<?> registerViaPrivateLink(@PathVariable String token,
-                                                    @Valid @RequestBody EmployeeInscriptionForm form) {
-        PrivateLink link = privateLinkService.getValidLink(token);
 
-        // On passe ensuite le lien et le form au service qui crée le user
-        userService.registerEmployeeViaPrivateLink(form, link);
-
-        return ResponseEntity.ok("Inscription réussie !");
-    }
     @GetMapping("/email/{email}")
     public Entreprise getCompanyByEmail(@PathVariable String email) {
         return entrepriseService.getEntrepriseByEmail(email);
     }
-    @GetMapping("/privateLinks")
-    public ResponseEntity<List<PrivateLinkResponse>> getMyPrivateLinks(Authentication authentication) {
-        User currentUser = (User) authentication.getPrincipal();
 
-        // Vérification stricte du rôle
-        if (!(currentUser instanceof Entreprise)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        Entreprise entreprise = (Entreprise) currentUser; // Downcast
-        List<PrivateLinkResponse> links = privateLinkService.getPrivateLinksForEntreprise(entreprise);
-
-        return ResponseEntity.ok(links); // Retourne les données transformées par le service
-    }
 }

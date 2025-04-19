@@ -2,6 +2,7 @@ package com.example.AutoEcole.dal.domain.entity;
 
 import com.example.AutoEcole.dal.domain.entity.base.BaseEntity;
 import com.example.AutoEcole.dal.domain.enum_.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "stage")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class Stage extends BaseEntity<Long> {
     @Column

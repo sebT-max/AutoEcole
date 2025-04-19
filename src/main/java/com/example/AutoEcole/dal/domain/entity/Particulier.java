@@ -33,6 +33,8 @@ public class Particulier extends User {
     @ManyToOne
     private Stage stage;
 
+
+
     //@Column(nullable = false)
     //private String email;
 

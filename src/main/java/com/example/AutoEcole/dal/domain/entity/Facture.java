@@ -26,4 +26,7 @@ public class Facture extends BaseEntity<Long> {
     @Column(nullable = false)
     private Double price;
 
+    @Column(nullable=false)
+    private int numberOfInterns;
+
 }

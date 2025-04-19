@@ -1,5 +1,6 @@
 package com.example.AutoEcole.api.controller;
 
+import com.example.AutoEcole.api.model.Entreprise.EmployeeInscriptionForm;
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkRequest;
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkResponse;
 import com.example.AutoEcole.api.model.PrivateLink.PrivateLinkValidationResponse;
@@ -9,6 +10,7 @@ import com.example.AutoEcole.dal.domain.entity.Entreprise;
 import com.example.AutoEcole.dal.domain.entity.Inscription;
 import com.example.AutoEcole.dal.domain.entity.PrivateLink;
 import com.example.AutoEcole.dal.domain.entity.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,18 +38,24 @@ public class PrivateLinkController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/validate/{token}")
-    public ResponseEntity<PrivateLinkValidationResponse> validateLink(@PathVariable String token) {
-        try {
-            // Récupère le lien validé
-            PrivateLinkValidationResponse response = privateLinkService.validateAndGetInfo(token);
+    @GetMapping("/privateLinks")
+    public ResponseEntity<List<PrivateLinkResponse>> getMyPrivateLinks(Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
 
-            // Retourne une réponse de validation avec succès
-            return ResponseEntity.ok(response);
-        } catch (ResponseStatusException e) {
-            // Si une exception est lancée (par exemple, lien expiré ou usage dépassé), retourne un message d'erreur
-            return ResponseEntity.status(e.getStatusCode())
-                    .body(new PrivateLinkValidationResponse(null, null, null, false, 0));
-        }
+//        // Vérification stricte du rôle
+//        if (!(currentUser instanceof Entreprise)) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
+
+        Entreprise entreprise = (Entreprise) currentUser; // Downcast
+        List<PrivateLinkResponse> links = privateLinkService.getPrivateLinksForEntreprise(entreprise);
+
+        return ResponseEntity.ok(links); // Retourne les données transformées par le service
     }
+    @GetMapping("/{token}")
+    public ResponseEntity<PrivateLinkValidationResponse> getLinkDetails(@PathVariable String token) {
+        PrivateLinkValidationResponse response = privateLinkService.validateAndGetInfo(token);
+        return ResponseEntity.ok(response);
+    }
+
 }
