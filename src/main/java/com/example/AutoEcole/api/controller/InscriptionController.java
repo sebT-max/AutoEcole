@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -44,8 +46,12 @@ public class InscriptionController {
         // Envoie les fichiers au service si nécessaire
         userService.registerEmployeeViaPrivateLink(form, link, cv, photo);
 
-        return ResponseEntity.ok("Inscription réussie !");
+        // ✅ Retourne un JSON bien formé
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Inscription réussie !");
+        return ResponseEntity.ok(response);
     }
+
 
 
 

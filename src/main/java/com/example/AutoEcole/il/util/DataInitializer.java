@@ -39,6 +39,11 @@ public class DataInitializer implements CommandLineRunner {
             roleCompany.setName("ENTREPRISE");
             roleCompany.setDescription("Il s'agit d'une entreprise dont un employé doit/ou des employés doivent récupérer des points de permis");
             roleRepository.save(roleCompany);
+
+            Role roleEmployee = new Role();
+            roleEmployee.setName("EMPLOYE");
+            roleEmployee.setDescription("Il s'agit des employés invités par l'entreprise à effectuer un stage");
+            roleRepository.save(roleEmployee);
             //test
 
             Particulier client01 = new Particulier();

@@ -13,5 +13,5 @@ public record PrivateLinkResponse(
 ) {}
 
 
-Lien créé pour Jupiler.
-http://localhost:4200/inscription/68523bdb-5452-4a5e-967a-724b30d0b7ab (expire le 26/04/2025 15:41:57)
+//Lien créé pour Jupiler.
+//http://localhost:4200/inscription/68523bdb-5452-4a5e-967a-724b30d0b7ab (expire le 26/04/2025 15:41:57)

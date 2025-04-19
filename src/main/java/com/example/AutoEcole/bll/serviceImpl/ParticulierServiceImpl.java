@@ -26,48 +26,7 @@ public class ParticulierServiceImpl implements ParticulierService {
     private final CloudinaryService fileService;
     private final DocumentRepository documentRepository;
 
-//    @Override
-//    public Particulier register(ParticulierRegisterRequestBody requestBody, List<MultipartFile> files) {
-//        if (!requestBody.acceptTerms()) {
-//            throw new IllegalArgumentException("You must accept the terms and conditions to register.");
-//        }
-//
-//        if (userRepository.findByEmail(requestBody.email()).isPresent()) {
-//            throw new IllegalArgumentException("Email already in use.");
-//        }
-//
-//        Role role = roleRepository.findById(requestBody.roleId())
-//                .orElseThrow(() -> new RuntimeException("Role not found"));
-//
-//        Particulier newUser = requestBody.toEntity(); // ⚠️ ici toEntity doit retourner un Particulier
-//        newUser.setRole(role);
-//        newUser.setPassword(passwordEncoder.encode(requestBody.password()));
-//
-//        Particulier savedUser = (Particulier) userRepository.save(newUser); // ou direct : `particulierRepository.save()`
-//
-//        if (files != null && !files.isEmpty()) {
-//            for (MultipartFile file : files) {
-//                try {
-//                    String fileName = fileService.saveFile(file);
-//                    DocumentType documentType = determineDocumentType(file);
-//
-//                    Document doc = Document.builder()
-//                            .fileName(fileName)
-//                            .filePath("uploads/" + fileName)
-//                            .uploadedAt(LocalDateTime.now())
-//                            .user(savedUser)
-//                            .type(documentType)
-//                            .build();
-//
-//                    documentRepository.save(doc);
-//                } catch (IOException e) {
-//                    throw new RuntimeException("Erreur lors de l'enregistrement du fichier : " + file.getOriginalFilename(), e);
-//                }
-//            }
-//        }
-//
-//        return savedUser;
-//    }
+
 @Override
 public Particulier register(ParticulierRegisterRequestBody requestBody) {
     if (!requestBody.acceptTerms()) {

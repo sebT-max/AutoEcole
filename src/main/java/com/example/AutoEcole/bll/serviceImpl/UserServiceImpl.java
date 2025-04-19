@@ -6,6 +6,8 @@ import com.example.AutoEcole.bll.service.DocumentService;
 import com.example.AutoEcole.bll.service.UserService;
 import com.example.AutoEcole.dal.domain.entity.*;
 import com.example.AutoEcole.dal.domain.enum_.DocumentType;
+import com.example.AutoEcole.dal.domain.enum_.InscriptionStatut;
+import com.example.AutoEcole.dal.domain.enum_.StageType;
 import com.example.AutoEcole.dal.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -94,6 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerEmployeeViaPrivateLink(EmployeeInscriptionForm form, PrivateLink link, MultipartFile cv, MultipartFile photo) throws IOException {
+
         // Vérifier l'unicité de l'e-mail
         if (userRepository.findByEmail(form.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email déjà utilisé");
@@ -112,31 +115,35 @@ public class UserServiceImpl implements UserService {
 
         // Créer un nouvel utilisateur (Particulier)
         Particulier employee = new Particulier();
+        employee.setLastname(form.lastname());
         employee.setFirstname(form.firstname());
-        employee.setLastname(form.lastName());
         employee.setEmail(form.email());
+        employee.setPassword(passwordEncoder.encode(form.password()));
         employee.setTelephone(form.telephone());
-
-        // Associer l'entreprise
+        // Assure-toi que tu définis aussi la date de naissance
+        if (form.birthdate() != null) {
+            employee.setBirthdate(form.birthdate());
+        } else {
+            // Si pas de date de naissance, il faut gérer ce cas, soit par défaut, soit lever une exception
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Date de naissance manquante");
+        }
+        employee.setAcceptTerms(true);
+        // Affecter le rôle "particulier" ou "employe" selon ta stratégie
+        Role role = roleRepository.findRoleByName("EMPLOYE") // ou "employe"
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Rôle introuvable"));
+        employee.setRole(role);
         employee.setEntreprise(link.getEntreprise());
 
+        userRepository.save(employee);
+        // Associer l'entreprise
         // Créer une nouvelle inscription pour cet employé
         Inscription inscription = new Inscription();
         inscription.setUser(employee); // Associer l'employé à l'inscription
         inscription.setStage(link.getStage()); // Associer le stage concerné par le lien privé
         inscription.setCreatedAt(LocalDateTime.now()); // Mettre la date d'inscription
-        inscription = inscriptionRepository.save(inscription); // Sauvegarder l'inscription
+        inscription.setInscriptionStatut(InscriptionStatut.CONFIRME);
+        inscription.setStageType(StageType.VOLONTAIRE);
 
-        // Affecter le rôle "particulier" ou "employe" selon ta stratégie
-        Role role = roleRepository.findRoleByName("PARTICULIER") // ou "employe"
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Rôle introuvable"));
-        employee.setRole(role);
-
-        // Enregistrer l'employé dans la base de données
-        userRepository.save(employee);
-
-        // Associer l'ID de l'employé à l'inscription après la sauvegarde
-        inscription.setUser(employee);
         inscriptionRepository.save(inscription);
 
         // Enregistrer le fichier CV si présent
@@ -155,11 +162,7 @@ public class UserServiceImpl implements UserService {
             documentRepo.save(photoDocument);  // Sauvegarder le document dans la base de données
         }
     }
-
-
-
-
-
-
 }
 
+//Lien créé pour Jupiler.
+//http://localhost:4200/inscription/d63eaa85-71af-4ef6-8f49-77d5207713b8 (expire le 26/04/2025 17:51:32)
